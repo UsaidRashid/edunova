@@ -64,6 +64,8 @@ export default function PeopleDirectory() {
   const [selectedRole, setSelectedRole] = useState("");
   const [selectedTeam, setSelectedTeam] = useState("");
   const [openAddUser, setOpenAddUser] = useState(false);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -84,33 +86,69 @@ export default function PeopleDirectory() {
     fetchData();
   }, [pageIndex, pageSize]);
 
-  const handleDelete = async (_id) => {
-    try {
-      const response = await axios.post(api + "delete-user", { _id });
-      if (response.status === 200) {
-        alert("User Deleted Successfully");
-        window.location.reload();
-      } else {
-        alert(response.data.message || "Error Deleting User");
-      }
-    } catch (error) {
-      console.error("Error Deleting User", error);
-      if (error.response) {
-        alert(
-          "Error from server: " +
-            error.response.status +
-            " - " +
-            error.response.data.message
-        );
-      } else if (error.request) {
-        alert("No response from the server");
-      } else {
-        alert("Error setting up the request: " + error.message);
+  const DeleteConfirmationPopup = ({ onClose, onDelete }) => (
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+        <h3 className="text-lg font-semibold mb-4">Delete Member Details</h3>
+        <p className="mb-4">
+          Are you sure you want to delete this member details? This action
+          cannot be undone.
+        </p>
+        <div className="flex justify-end space-x-4">
+          <button
+            onClick={onClose}
+            className="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onDelete}
+            className="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const handleDeleteClick = (user) => {
+    console.log(user);
+    setUserToDelete(user._id);
+    setShowDeletePopup(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (userToDelete) {
+      try {
+        const response = await axios.post(api + "delete-user", {
+          _id: userToDelete,
+        });
+        if (response.status === 200) {
+          alert("User Deleted Successfully");
+          setUserToDelete(null);
+          setShowDeletePopup(false);
+          window.location.reload();
+        } else {
+          alert(response.data.message || "Error Deleting User");
+        }
+      } catch (error) {
+        console.error("Error Deleting User", error);
+        if (error.response) {
+          alert(
+            "Error from server: " +
+              error.response.status +
+              " - " +
+              error.response.data.message
+          );
+        } else if (error.request) {
+          alert("No response from the server");
+        } else {
+          alert("Error setting up the request: " + error.message);
+        }
       }
     }
   };
-
-  
 
   const handleEditUser = async (e) => {
     e.preventDefault();
@@ -351,7 +389,7 @@ export default function PeopleDirectory() {
                     ))}
                     <td className="px-4 py-2 text-left text-gray-600">
                       <button
-                        onClick={() => handleDelete(row.original._id)}
+                        onClick={() => handleDeleteClick(row.original)}
                         className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700"
                       >
                         <FontAwesomeIcon icon={faTrash} />
@@ -407,6 +445,12 @@ export default function PeopleDirectory() {
               </span>
             </div>
           </>
+        )}
+        {showDeletePopup && (
+          <DeleteConfirmationPopup
+            onClose={() => setShowDeletePopup(false)}
+            onDelete={handleConfirmDelete}
+          />
         )}
       </div>
     </div>

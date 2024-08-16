@@ -1,5 +1,6 @@
 const User = require("../models/users");
 const cloudinary = require("cloudinary").v2;
+const mongoose =require('mongoose');
 
 module.exports.fetchUsers = async (req, res) => {
   try {
