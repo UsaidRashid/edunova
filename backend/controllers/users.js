@@ -1,4 +1,5 @@
 const User = require("../models/users");
+const cloudinary = require("cloudinary").v2;
 
 module.exports.fetchUsers = async (req, res) => {
   try {
@@ -25,6 +26,8 @@ module.exports.addUser = async (req, res) => {
       teams,
       status,
     } = req.body;
+
+    const profilePic = req.file ? req.file.path : null;
 
     if (
       !name ||
@@ -54,8 +57,17 @@ module.exports.addUser = async (req, res) => {
       nationality,
       contact,
       role,
-      teams: teams,
+      teams,
+      profilePic,
+      status,
     });
+
+    if (profilePic) {
+      const cloudinaryUrl = cloudinary.url(profilePic, {
+        secure: true,
+      });
+      newUser.profilePic = cloudinaryUrl;
+    }
 
     await newUser.save();
 
@@ -93,6 +105,8 @@ module.exports.editUser = async (req, res) => {
   try {
     const { name, email, role, teams, status, _id } = req.body;
 
+    const profilePic = req.file ? req.file.filename : null;
+
     if (!name || !email || !status || !role || !teams) {
       return res.status(400).json({ message: "All fields are required." });
     }
@@ -101,7 +115,14 @@ module.exports.editUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid user ID." });
     }
 
-    const updateData = { name, email, role, teams, status };
+    const updateData = { name, email, role, teams, status, profilePic };
+
+    if (profilePic) {
+      const cloudinaryUrl = cloudinary.url(profilePic, {
+        secure: true,
+      });
+      updateData.profilePic = cloudinaryUrl;
+    }
 
     const updatedUser = await User.findByIdAndUpdate(_id, updateData, {
       new: true,

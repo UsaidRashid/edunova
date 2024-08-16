@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema({
   },
   status :{
     type:String,
+    default : 'Active'
   },
   workEmail: {
     type: String,
