@@ -14,6 +14,8 @@ module.exports.fetchUsers = async (req, res) => {
 };
 
 module.exports.addUser = async (req, res) => {
+  console.log(req.body);
+  console.log(req.file);
   try {
     const {
       name,

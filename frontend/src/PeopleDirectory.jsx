@@ -11,6 +11,7 @@ import Sidebar from "./Sidebar";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPen, faPlus } from "@fortawesome/free-solid-svg-icons";
+import AddUser from "./AddUser";
 
 const api = import.meta.env.VITE_BACKEND_API;
 
@@ -62,6 +63,7 @@ export default function PeopleDirectory() {
   const [showTeamDropdown, setShowTeamDropdown] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
   const [selectedTeam, setSelectedTeam] = useState("");
+  const [openAddUser, setOpenAddUser] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -108,32 +110,7 @@ export default function PeopleDirectory() {
     }
   };
 
-  const handleAddUser = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(api + "add-user");
-      if (response.status === 200) {
-        alert("User Added Successfully");
-        window.location.reload();
-      } else {
-        alert(response.data.message || "Error Adding User");
-      }
-    } catch (error) {
-      console.error("Error Adding User", error);
-      if (error.response) {
-        alert(
-          "Error from server: " +
-            error.response.status +
-            " - " +
-            error.response.data.message
-        );
-      } else if (error.request) {
-        alert("No response from the server");
-      } else {
-        alert("Error setting up the request: " + error.message);
-      }
-    }
-  };
+  
 
   const handleEditUser = async (e) => {
     e.preventDefault();
@@ -228,195 +205,209 @@ export default function PeopleDirectory() {
     <div className="flex">
       <Sidebar />
       <div className="p-2 relative w-full">
-        <div className="flex items-center mb-4">
-          <input
-            type="text"
-            placeholder="Search..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="mr-2 p-1 border border-gray-300 rounded-lg w-full md:w-1/2 lg:w-1/3 xl:w-1/4"
-          />
-          <button
-            onClick={toggleFilter}
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-          >
-            Filter
-          </button>
-          <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-            <FontAwesomeIcon icon={faPlus} /> Add Member
-          </button>
-          {filterVisible && (
-            <div className="absolute bg-white border border-gray-300 mt-2 p-4 rounded-lg shadow-lg w-64 md:w-80 lg:w-96 xl:w-1/2">
-              <div className="mb-4">
-                <button
-                  onClick={toggleRoleDropdown}
-                  className="text-blue-500 block w-full text-left p-2 rounded-lg hover:bg-gray-100"
-                >
-                  Roles
-                </button>
+        {openAddUser ? (
+          <AddUser />
+        ) : (
+          <>
+            <div className="flex items-center mb-4">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="mr-2 p-1 border border-gray-300 rounded-lg w-full md:w-1/2 lg:w-1/3 xl:w-1/4"
+              />
+              <button
+                onClick={toggleFilter}
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+              >
+                Filter
+              </button>
+              <button
+                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+                onClick={() => setOpenAddUser(true)}
+              >
+                <FontAwesomeIcon icon={faPlus} /> Add Member
+              </button>
+              {filterVisible && (
+                <div className="absolute bg-white border border-gray-300 mt-2 p-4 rounded-lg shadow-lg w-64 md:w-80 lg:w-96 xl:w-1/2">
+                  <div className="mb-4">
+                    <button
+                      onClick={toggleRoleDropdown}
+                      className="text-blue-500 block w-full text-left p-2 rounded-lg hover:bg-gray-100"
+                    >
+                      Roles
+                    </button>
 
-                {showRoleDropdown && (
-                  <div className="mt-2 border border-gray-300 rounded-lg bg-white">
-                    <button
-                      onClick={() => setSelectedRole("Product Designer")}
-                      className="block px-4 py-2 text-left hover:bg-gray-100"
-                    >
-                      Product Designer
-                    </button>
-                    <button
-                      onClick={() => setSelectedRole("Product Manager")}
-                      className="block px-4 py-2 text-left hover:bg-gray-100"
-                    >
-                      Product Manager
-                    </button>
-                    <button
-                      onClick={() => setSelectedRole("Frontend Developer")}
-                      className="block px-4 py-2 text-left hover:bg-gray-100"
-                    >
-                      Frontend Developer
-                    </button>
-                    <button
-                      onClick={() => setSelectedRole("Backend Developer")}
-                      className="block px-4 py-2 text-left hover:bg-gray-100"
-                    >
-                      Backend Developer
-                    </button>
+                    {showRoleDropdown && (
+                      <div className="mt-2 border border-gray-300 rounded-lg bg-white">
+                        <button
+                          onClick={() => setSelectedRole("Product Designer")}
+                          className="block px-4 py-2 text-left hover:bg-gray-100"
+                        >
+                          Product Designer
+                        </button>
+                        <button
+                          onClick={() => setSelectedRole("Product Manager")}
+                          className="block px-4 py-2 text-left hover:bg-gray-100"
+                        >
+                          Product Manager
+                        </button>
+                        <button
+                          onClick={() => setSelectedRole("Frontend Developer")}
+                          className="block px-4 py-2 text-left hover:bg-gray-100"
+                        >
+                          Frontend Developer
+                        </button>
+                        <button
+                          onClick={() => setSelectedRole("Backend Developer")}
+                          className="block px-4 py-2 text-left hover:bg-gray-100"
+                        >
+                          Backend Developer
+                        </button>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-              <div>
-                <button
-                  onClick={toggleTeamDropdown}
-                  className="text-blue-500 block w-full text-left p-2 rounded-lg hover:bg-gray-100"
-                >
-                  Teams
-                </button>
-                {showTeamDropdown && (
-                  <div className="mt-2 border border-gray-300 rounded-lg bg-white">
+                  <div>
                     <button
-                      onClick={() => setSelectedTeam("Design")}
-                      className="block px-4 py-2 text-left hover:bg-gray-100"
+                      onClick={toggleTeamDropdown}
+                      className="text-blue-500 block w-full text-left p-2 rounded-lg hover:bg-gray-100"
                     >
-                      Design
+                      Teams
                     </button>
-                    <button
-                      onClick={() => setSelectedTeam("Product")}
-                      className="block px-4 py-2 text-left hover:bg-gray-100"
-                    >
-                      Product
-                    </button>
-                    <button
-                      onClick={() => setSelectedTeam("Marketing")}
-                      className="block px-4 py-2 text-left hover:bg-gray-100"
-                    >
-                      Marketing
-                    </button>
-                    <button
-                      onClick={() => setSelectedTeam("Technology")}
-                      className="block px-4 py-2 text-left hover:bg-gray-100"
-                    >
-                      Technology
-                    </button>
+                    {showTeamDropdown && (
+                      <div className="mt-2 border border-gray-300 rounded-lg bg-white">
+                        <button
+                          onClick={() => setSelectedTeam("Design")}
+                          className="block px-4 py-2 text-left hover:bg-gray-100"
+                        >
+                          Design
+                        </button>
+                        <button
+                          onClick={() => setSelectedTeam("Product")}
+                          className="block px-4 py-2 text-left hover:bg-gray-100"
+                        >
+                          Product
+                        </button>
+                        <button
+                          onClick={() => setSelectedTeam("Marketing")}
+                          className="block px-4 py-2 text-left hover:bg-gray-100"
+                        >
+                          Marketing
+                        </button>
+                        <button
+                          onClick={() => setSelectedTeam("Technology")}
+                          className="block px-4 py-2 text-left hover:bg-gray-100"
+                        >
+                          Technology
+                        </button>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-        <table className="min-w-full table-auto">
-          <thead className="bg-gray-100">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th
-                    key={header.id}
-                    onClick={() => table.getColumn(header.id).toggleSorting()}
-                    className="px-4 py-2 text-left text-gray-600"
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
+            <table className="min-w-full table-auto">
+              <thead className="bg-gray-100">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <tr key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <th
+                        key={header.id}
+                        onClick={() =>
+                          table.getColumn(header.id).toggleSorting()
+                        }
+                        className="px-4 py-2 text-left text-gray-600"
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                        {header.column.getIsSorted()
+                          ? header.column.getIsSorted() === "asc"
+                            ? " 🔼"
+                            : " 🔽"
+                          : null}
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+              <tbody>
+                {table.getRowModel().rows.map((row) => (
+                  <tr key={row.id} className="hover:bg-gray-100">
+                    {row.getVisibleCells().map((cell) => (
+                      <td
+                        key={cell.id}
+                        className="px-4 py-2 text-left text-gray-600"
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
                         )}
-                    {header.column.getIsSorted()
-                      ? header.column.getIsSorted() === "asc"
-                        ? " 🔼"
-                        : " 🔽"
-                      : null}
-                  </th>
+                      </td>
+                    ))}
+                    <td className="px-4 py-2 text-left text-gray-600">
+                      <button
+                        onClick={() => handleDelete(row.original._id)}
+                        className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+                      >
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    </td>
+                    <td className="px-4 py-2 text-left text-gray-600">
+                      <button
+                        onClick={() => handleEditUser(row.original)}
+                        className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-700"
+                      >
+                        <FontAwesomeIcon icon={faPen} />
+                      </button>
+                    </td>
+                  </tr>
                 ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="hover:bg-gray-100">
-                {row.getVisibleCells().map((cell) => (
-                  <td
-                    key={cell.id}
-                    className="px-4 py-2 text-left text-gray-600"
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-                <td className="px-4 py-2 text-left text-gray-600">
-                  <button
-                    onClick={() => handleDelete(row.original._id)}
-                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700"
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </button>
-                </td>
-                <td className="px-4 py-2 text-left text-gray-600">
-                  <button
-                    onClick={() => handleEditUser(row.original)}
-                    className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-700"
-                  >
-                    <FontAwesomeIcon icon={faPen} />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <div className="pagination mt-4 flex justify-center">
-          <button
-            onClick={() => table.setPageIndex(0)}
-            disabled={!table.getCanPreviousPage()}
-            className="mr-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-l"
-          >
-            {"<<"}
-          </button>
-          <button
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="mr-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4"
-          >
-            {"<"}
-          </button>
-          <button
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className="mr-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4"
-          >
-            {">"}
-          </button>
-          <button
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-            disabled={!table.getCanNextPage()}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-r"
-          >
-            {">>"}
-          </button>
-          <span className="ml-2 text-gray-600">
-            Page{" "}
-            <strong>
-              {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount()}
-            </strong>
-          </span>
-        </div>
+              </tbody>
+            </table>
+            <div className="pagination mt-4 flex justify-center">
+              <button
+                onClick={() => table.setPageIndex(0)}
+                disabled={!table.getCanPreviousPage()}
+                className="mr-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-l"
+              >
+                {"<<"}
+              </button>
+              <button
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+                className="mr-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4"
+              >
+                {"<"}
+              </button>
+              <button
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+                className="mr-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4"
+              >
+                {">"}
+              </button>
+              <button
+                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                disabled={!table.getCanNextPage()}
+                className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-r"
+              >
+                {">>"}
+              </button>
+              <span className="ml-2 text-gray-600">
+                Page{" "}
+                <strong>
+                  {table.getState().pagination.pageIndex + 1} of{" "}
+                  {table.getPageCount()}
+                </strong>
+              </span>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
