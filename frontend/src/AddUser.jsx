@@ -114,173 +114,193 @@ const AddUser = () => {
       <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold mb-6">Add User</h2>
         <form onSubmit={handleSubmit(handleAddUser)}>
-          {/* Name */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700">
-              Name
-            </label>
-            <input
-              {...register("name")}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-            />
-            {errors.name && (
-              <p className="text-red-500 text-sm">{errors.name.message}</p>
-            )}
+          {/* Name and Email */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Name
+              </label>
+              <input
+                {...register("name")}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+              />
+              {errors.name && (
+                <p className="text-red-500 text-sm">{errors.name.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Email
+              </label>
+              <input
+                {...register("email")}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                type="email"
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm">{errors.email.message}</p>
+              )}
+            </div>
           </div>
 
-          {/* Email */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              {...register("email")}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-              type="email"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email.message}</p>
-            )}
+          {/* Work Email, Contact*/}
+          {/* Work Email and Contact */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Work Email
+              </label>
+              <input
+                {...register("workEmail")}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                type="email"
+              />
+              {errors.workEmail && (
+                <p className="text-red-500 text-sm">
+                  {errors.workEmail.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Contact
+              </label>
+              <input
+                {...register("contact")}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                type="number"
+              />
+              {errors.contact && (
+                <p className="text-red-500 text-sm">{errors.contact.message}</p>
+              )}
+            </div>
           </div>
 
-          {/* Work Email */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700">
-              Work Email
-            </label>
-            <input
-              {...register("workEmail")}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-              type="email"
-            />
-            {errors.workEmail && (
-              <p className="text-red-500 text-sm">{errors.workEmail.message}</p>
-            )}
+          {/* Nationality and Gender */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Nationality
+              </label>
+              <select
+                {...register("nationality")}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+              >
+                <option value="">Select Nationality</option>
+                {nationalityOptions.map((nationality) => (
+                  <option key={nationality} value={nationality}>
+                    {nationality}
+                  </option>
+                ))}
+              </select>
+              {errors.nationality && (
+                <p className="text-red-500 text-sm">
+                  {errors.nationality.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Gender
+              </label>
+              <select
+                {...register("gender")}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+              >
+                <option value="">Select Gender</option>
+                {genderOptions.map((gender) => (
+                  <option key={gender} value={gender}>
+                    {gender}
+                  </option>
+                ))}
+              </select>
+              {errors.gender && (
+                <p className="text-red-500 text-sm">{errors.gender.message}</p>
+              )}
+            </div>
           </div>
 
-          {/* Gender */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700">
-              Gender
-            </label>
-            <select
-              {...register("gender")}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-            >
-              <option value="">Select Gender</option>
-              {genderOptions.map((gender) => (
-                <option key={gender} value={gender}>
-                  {gender}
-                </option>
-              ))}
-            </select>
-            {errors.gender && (
-              <p className="text-red-500 text-sm">{errors.gender.message}</p>
-            )}
-          </div>
+          {/* Role and Teams */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Role
+              </label>
+              <select
+                {...register("role")}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+              >
+                <option value="">Select Role</option>
+                {roleOptions.map((role) => (
+                  <option key={role} value={role}>
+                    {role}
+                  </option>
+                ))}
+              </select>
+              {errors.role && (
+                <p className="text-red-500 text-sm">{errors.role.message}</p>
+              )}
+            </div>
 
-          {/* Nationality */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700">
-              Nationality
-            </label>
-            <select
-              {...register("nationality")}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-            >
-              <option value="">Select Nationality</option>
-              {nationalityOptions.map((nationality) => (
-                <option key={nationality} value={nationality}>
-                  {nationality}
-                </option>
-              ))}
-            </select>
-            {errors.nationality && (
-              <p className="text-red-500 text-sm">
-                {errors.nationality.message}
-              </p>
-            )}
-          </div>
-
-          {/* Contact */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700">
-              Contact
-            </label>
-            <input
-              {...register("contact")}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-              type="number"
-            />
-            {errors.contact && (
-              <p className="text-red-500 text-sm">{errors.contact.message}</p>
-            )}
-          </div>
-
-          {/* Role */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700">
-              Role
-            </label>
-            <select
-              {...register("role")}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-            >
-              <option value="">Select Role</option>
-              {roleOptions.map((role) => (
-                <option key={role} value={role}>
-                  {role}
-                </option>
-              ))}
-            </select>
-            {errors.role && (
-              <p className="text-red-500 text-sm">{errors.role.message}</p>
-            )}
-          </div>
-
-          {/* Teams */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700">
-              Teams
-            </label>
-            {teamOptions.map((team) => (
-              <div key={team}>
-                <label className="inline-flex items-center">
-                  <input
-                    type="checkbox"
-                    value={team}
-                    onChange={handleTeamChange}
-                    checked={selectedTeams.includes(team)}
-                    className="form-checkbox"
-                  />
-                  <span className="ml-2">{team}</span>
-                </label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Teams
+              </label>
+              <div className="flex flex-wrap gap-4">
+                {teamOptions.map((team) => (
+                  <div key={team} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      value={team}
+                      onChange={handleTeamChange}
+                      checked={selectedTeams.includes(team)}
+                      className="form-checkbox h-5 w-5 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
+                    />
+                    <label className="text-gray-700 text-sm">{team}</label>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
 
           {/* Profile Picture */}
-          <div className="mb-4">
+          <div className="mb-6">
             <label
-              className="block text-sm font-medium text-gray-700"
-              htmlFor="profilePic"
+              htmlFor="file-upload"
+              className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center cursor-pointer"
             >
-              Profile Picture
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l.636-.636a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+               Upload A Profile Picture
+              <input
+                id="file-upload"
+                type="file"
+                className="hidden"
+                onChange={handleFileChange}
+              />
             </label>
-            <input
-              id="profilePic"
-              type="file"
-              name="profilePic"
-              onChange={handleFileChange}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-            />
           </div>
 
           {/* Submit Button */}
           <div className="flex justify-end">
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              className="px-6 py-2 bg-emerald-600 text-white font-medium rounded-md shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
             >
               Add User
             </button>
