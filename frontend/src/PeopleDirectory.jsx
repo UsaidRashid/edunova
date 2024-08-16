@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo ,useEffect } from "react";
 import {
   createColumnHelper,
   flexRender,
@@ -58,6 +58,7 @@ export default function PeopleDirectory() {
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [sorting, setSorting] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -158,11 +159,24 @@ export default function PeopleDirectory() {
     }
   };
 
-  const paginatedData = React.useMemo(() => {
+  const filteredData = useMemo(() => {
+    if (!search) return data;
+
+    const lowercasedSearch = search.toLowerCase();
+    return data.filter((row) =>
+      Object.values(row).some(
+        (value) =>
+          typeof value === "string" &&
+          value.toLowerCase().includes(lowercasedSearch)
+      )
+    );
+  }, [data, search]);
+
+  const paginatedData = useMemo(() => {
     const start = pageIndex * pageSize;
     const end = start + pageSize;
-    return data.slice(start, end);
-  }, [data, pageIndex, pageSize]);
+    return filteredData.slice(start, end);
+  }, [filteredData, pageIndex, pageSize]);
 
   const table = useReactTable({
     data: paginatedData,
@@ -194,6 +208,13 @@ export default function PeopleDirectory() {
     <div className="flex">
       <Sidebar />
       <div className="p-2">
+        <input
+          type="text"
+          placeholder="Search..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="mb-2 p-1 border border-gray-300"
+        />
         <table>
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
