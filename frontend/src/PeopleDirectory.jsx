@@ -1,4 +1,4 @@
-import React, { useState, useMemo ,useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   createColumnHelper,
   flexRender,
@@ -19,25 +19,21 @@ const columns = [
     header: () => <span>Name</span>,
     cell: (info) => <span>{info.getValue()}</span>,
     footer: (info) => info.column.id,
-    enableSorting: true,
   }),
   columnHelper.accessor("status", {
     header: () => <span>Status</span>,
     cell: (info) => <span>{info.getValue()}</span>,
     footer: (info) => info.column.id,
-    enableSorting: true,
   }),
   columnHelper.accessor("role", {
     header: () => <span>Role</span>,
     cell: (info) => <span>{info.getValue()}</span>,
     footer: (info) => info.column.id,
-    enableSorting: true,
   }),
   columnHelper.accessor("email", {
     header: () => <span>Email</span>,
     cell: (info) => <a href={`mailto:${info.getValue()}`}>{info.getValue()}</a>,
     footer: (info) => info.column.id,
-    enableSorting: true,
   }),
   columnHelper.accessor("teams", {
     header: () => <span>Teams</span>,
@@ -59,6 +55,11 @@ export default function PeopleDirectory() {
   const [totalPages, setTotalPages] = useState(1);
   const [sorting, setSorting] = useState([]);
   const [search, setSearch] = useState("");
+  const [filterVisible, setFilterVisible] = useState(false);
+  const [showRoleDropdown, setShowRoleDropdown] = useState(false);
+  const [showTeamDropdown, setShowTeamDropdown] = useState(false);
+  const [selectedRole, setSelectedRole] = useState("");
+  const [selectedTeam, setSelectedTeam] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -160,17 +161,29 @@ export default function PeopleDirectory() {
   };
 
   const filteredData = useMemo(() => {
-    if (!search) return data;
+    let result = data;
 
-    const lowercasedSearch = search.toLowerCase();
-    return data.filter((row) =>
-      Object.values(row).some(
-        (value) =>
-          typeof value === "string" &&
-          value.toLowerCase().includes(lowercasedSearch)
-      )
-    );
-  }, [data, search]);
+    if (search) {
+      const lowercasedSearch = search.toLowerCase();
+      result = result.filter((row) =>
+        Object.values(row).some(
+          (value) =>
+            typeof value === "string" &&
+            value.toLowerCase().includes(lowercasedSearch)
+        )
+      );
+    }
+
+    if (selectedRole) {
+      result = result.filter((row) => row.role === selectedRole);
+    }
+
+    if (selectedTeam) {
+      result = result.filter((row) => row.teams.includes(selectedTeam));
+    }
+
+    return result;
+  }, [data, search, selectedRole, selectedTeam]);
 
   const paginatedData = useMemo(() => {
     const start = pageIndex * pageSize;
@@ -204,18 +217,107 @@ export default function PeopleDirectory() {
     pageCount: totalPages,
   });
 
+  const toggleFilter = () => setFilterVisible(!filterVisible);
+
+  const toggleRoleDropdown = () => setShowRoleDropdown(!showRoleDropdown);
+  const toggleTeamDropdown = () => setShowTeamDropdown(!showTeamDropdown);
+
   return (
     <div className="flex">
       <Sidebar />
-      <div className="p-2">
-        <input
-          type="text"
-          placeholder="Search..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="mb-2 p-1 border border-gray-300"
-        />
-        <table>
+      <div className="p-2 relative">
+        <div className="flex items-center mb-4">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="mr-2 p-1 border border-gray-300"
+          />
+          <button
+            onClick={toggleFilter}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Filter
+          </button>
+          {filterVisible && (
+            <div className="absolute bg-white border border-gray-300 mt-2 p-4 rounded shadow-lg">
+              <div className="mb-4">
+                <button
+                  onClick={toggleRoleDropdown}
+                  className="text-blue-500 block w-full text-left"
+                >
+                  Roles
+                </button>
+                {showRoleDropdown && (
+                  <div className="mt-2 border border-gray-300 rounded bg-white">
+                    <button
+                      onClick={() => setSelectedRole("Product Designer")}
+                      className="block px-4 py-2 text-left hover:bg-gray-100"
+                    >
+                      Product Designer
+                    </button>
+                    <button
+                      onClick={() => setSelectedRole("Product Manager")}
+                      className="block px-4 py-2 text-left hover:bg-gray-100"
+                    >
+                      Product Manager
+                    </button>
+                    <button
+                      onClick={() => setSelectedRole("Frontend Developer")}
+                      className="block px-4 py-2 text-left hover:bg-gray-100"
+                    >
+                      Frontend Developer
+                    </button>
+                    <button
+                      onClick={() => setSelectedRole("Backend Developer")}
+                      className="block px-4 py-2 text-left hover:bg-gray-100"
+                    >
+                      Backend Developer
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div>
+                <button
+                  onClick={toggleTeamDropdown}
+                  className="text-blue-500 block w-full text-left"
+                >
+                  Teams
+                </button>
+                {showTeamDropdown && (
+                  <div className="mt-2 border border-gray-300 rounded bg-white">
+                    <button
+                      onClick={() => setSelectedTeam("Design")}
+                      className="block px-4 py-2 text-left hover:bg-gray-100"
+                    >
+                      Design
+                    </button>
+                    <button
+                      onClick={() => setSelectedTeam("Product")}
+                      className="block px-4 py-2 text-left hover:bg-gray-100"
+                    >
+                      Product
+                    </button>
+                    <button
+                      onClick={() => setSelectedTeam("Marketing")}
+                      className="block px-4 py-2 text-left hover:bg-gray-100"
+                    >
+                      Marketing
+                    </button>
+                    <button
+                      onClick={() => setSelectedTeam("Technology")}
+                      className="block px-4 py-2 text-left hover:bg-gray-100"
+                    >
+                      Technology
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+        <table className="min-w-full">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
@@ -230,7 +332,6 @@ export default function PeopleDirectory() {
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                    {/* Add sorting indicators */}
                     {header.column.getIsSorted()
                       ? header.column.getIsSorted() === "asc"
                         ? " 🔼"
@@ -263,22 +364,25 @@ export default function PeopleDirectory() {
             ))}
           </tbody>
         </table>
-        <div className="pagination">
+        <div className="pagination mt-4">
           <button
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
+            className="mr-1"
           >
             {"<<"}
           </button>
           <button
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
+            className="mr-1"
           >
             {"<"}
           </button>
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
+            className="mr-1"
           >
             {">"}
           </button>
@@ -288,11 +392,11 @@ export default function PeopleDirectory() {
           >
             {">>"}
           </button>
-          <span>
+          <span className="ml-2">
             Page{" "}
             <strong>
               {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount() || 1}
+              {table.getPageCount()}
             </strong>
           </span>
         </div>
