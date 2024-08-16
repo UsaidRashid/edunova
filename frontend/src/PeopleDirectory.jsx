@@ -9,6 +9,8 @@ import {
 } from "@tanstack/react-table";
 import Sidebar from "./Sidebar";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faPen, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const api = import.meta.env.VITE_BACKEND_API;
 
@@ -225,32 +227,36 @@ export default function PeopleDirectory() {
   return (
     <div className="flex">
       <Sidebar />
-      <div className="p-2 relative">
+      <div className="p-2 relative w-full">
         <div className="flex items-center mb-4">
           <input
             type="text"
             placeholder="Search..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="mr-2 p-1 border border-gray-300"
+            className="mr-2 p-1 border border-gray-300 rounded-lg w-full md:w-1/2 lg:w-1/3 xl:w-1/4"
           />
           <button
             onClick={toggleFilter}
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
           >
             Filter
           </button>
+          <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+            <FontAwesomeIcon icon={faPlus} /> Add Member
+          </button>
           {filterVisible && (
-            <div className="absolute bg-white border border-gray-300 mt-2 p-4 rounded shadow-lg">
+            <div className="absolute bg-white border border-gray-300 mt-2 p-4 rounded-lg shadow-lg w-64 md:w-80 lg:w-96 xl:w-1/2">
               <div className="mb-4">
                 <button
                   onClick={toggleRoleDropdown}
-                  className="text-blue-500 block w-full text-left"
+                  className="text-blue-500 block w-full text-left p-2 rounded-lg hover:bg-gray-100"
                 >
                   Roles
                 </button>
+
                 {showRoleDropdown && (
-                  <div className="mt-2 border border-gray-300 rounded bg-white">
+                  <div className="mt-2 border border-gray-300 rounded-lg bg-white">
                     <button
                       onClick={() => setSelectedRole("Product Designer")}
                       className="block px-4 py-2 text-left hover:bg-gray-100"
@@ -281,12 +287,12 @@ export default function PeopleDirectory() {
               <div>
                 <button
                   onClick={toggleTeamDropdown}
-                  className="text-blue-500 block w-full text-left"
+                  className="text-blue-500 block w-full text-left p-2 rounded-lg hover:bg-gray-100"
                 >
                   Teams
                 </button>
                 {showTeamDropdown && (
-                  <div className="mt-2 border border-gray-300 rounded bg-white">
+                  <div className="mt-2 border border-gray-300 rounded-lg bg-white">
                     <button
                       onClick={() => setSelectedTeam("Design")}
                       className="block px-4 py-2 text-left hover:bg-gray-100"
@@ -317,14 +323,15 @@ export default function PeopleDirectory() {
             </div>
           )}
         </div>
-        <table className="min-w-full">
-          <thead>
+        <table className="min-w-full table-auto">
+          <thead className="bg-gray-100">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
                     onClick={() => table.getColumn(header.id).toggleSorting()}
+                    className="px-4 py-2 text-left text-gray-600"
                   >
                     {header.isPlaceholder
                       ? null
@@ -344,55 +351,65 @@ export default function PeopleDirectory() {
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id}>
+              <tr key={row.id} className="hover:bg-gray-100">
                 {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id}>
+                  <td
+                    key={cell.id}
+                    className="px-4 py-2 text-left text-gray-600"
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
-                <td>
-                  <button onClick={() => handleDelete(row.original._id)}>
-                    Delete
+                <td className="px-4 py-2 text-left text-gray-600">
+                  <button
+                    onClick={() => handleDelete(row.original._id)}
+                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
                   </button>
                 </td>
-                <td>
-                  <button onClick={() => handleEditUser(row.original)}>
-                    Edit
+                <td className="px-4 py-2 text-left text-gray-600">
+                  <button
+                    onClick={() => handleEditUser(row.original)}
+                    className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-700"
+                  >
+                    <FontAwesomeIcon icon={faPen} />
                   </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        <div className="pagination mt-4">
+        <div className="pagination mt-4 flex justify-center">
           <button
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
-            className="mr-1"
+            className="mr-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-l"
           >
             {"<<"}
           </button>
           <button
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="mr-1"
+            className="mr-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4"
           >
             {"<"}
           </button>
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="mr-1"
+            className="mr-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4"
           >
             {">"}
           </button>
           <button
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
+            className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-r"
           >
             {">>"}
           </button>
-          <span className="ml-2">
+          <span className="ml-2 text-gray-600">
             Page{" "}
             <strong>
               {table.getState().pagination.pageIndex + 1} of{" "}
