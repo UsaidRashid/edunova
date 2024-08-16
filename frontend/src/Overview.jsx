@@ -3,7 +3,7 @@ import Sidebar from "./Sidebar";
 
 export default function Overview() {
   return (
-    <div>
+    <div className="flex">
       <Sidebar />
       Overview
     </div>

@@ -1,7 +1,7 @@
 import Navbar from "./Navbar";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Overview from "./Overview";
-import PeopleDirectory from "./PeopleDirectory";
+import PeopleDirectory from "./PeopleDirectory.tsx";
 
 function App() {
   return (
