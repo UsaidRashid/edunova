@@ -4,6 +4,7 @@ import {
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import Sidebar from "./Sidebar";
@@ -18,21 +19,25 @@ const columns = [
     header: () => <span>Name</span>,
     cell: (info) => <span>{info.getValue()}</span>,
     footer: (info) => info.column.id,
+    enableSorting: true,
   }),
   columnHelper.accessor("status", {
     header: () => <span>Status</span>,
     cell: (info) => <span>{info.getValue()}</span>,
     footer: (info) => info.column.id,
+    enableSorting: true,
   }),
   columnHelper.accessor("role", {
     header: () => <span>Role</span>,
     cell: (info) => <span>{info.getValue()}</span>,
     footer: (info) => info.column.id,
+    enableSorting: true,
   }),
   columnHelper.accessor("email", {
     header: () => <span>Email</span>,
     cell: (info) => <a href={`mailto:${info.getValue()}`}>{info.getValue()}</a>,
     footer: (info) => info.column.id,
+    enableSorting: true,
   }),
   columnHelper.accessor("teams", {
     header: () => <span>Teams</span>,
@@ -52,6 +57,7 @@ export default function PeopleDirectory() {
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
+  const [sorting, setSorting] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -163,11 +169,13 @@ export default function PeopleDirectory() {
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     state: {
       pagination: {
         pageIndex,
         pageSize,
       },
+      sorting,
     },
     onPaginationChange: (updater) => {
       const newState = updater({
@@ -177,6 +185,7 @@ export default function PeopleDirectory() {
       setPageIndex(newState.pageIndex);
       setPageSize(newState.pageSize);
     },
+    onSortingChange: setSorting,
     manualPagination: true,
     pageCount: totalPages,
   });
@@ -190,13 +199,22 @@ export default function PeopleDirectory() {
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <th key={header.id}>
+                  <th
+                    key={header.id}
+                    onClick={() => table.getColumn(header.id).toggleSorting()}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
+                    {/* Add sorting indicators */}
+                    {header.column.getIsSorted()
+                      ? header.column.getIsSorted() === "asc"
+                        ? " 🔼"
+                        : " 🔽"
+                      : null}
                   </th>
                 ))}
               </tr>
