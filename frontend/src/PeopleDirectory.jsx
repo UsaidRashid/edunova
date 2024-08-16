@@ -12,6 +12,8 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPen, faPlus } from "@fortawesome/free-solid-svg-icons";
 import AddUser from "./AddUser";
+import UserDetailsSidebar from "./UserDetailsSidebar";
+import EditUser from "./EditUser";
 
 const api = import.meta.env.VITE_BACKEND_API;
 
@@ -66,6 +68,9 @@ export default function PeopleDirectory() {
   const [openAddUser, setOpenAddUser] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedEditUser, setEditSelectedUser] = useState(null);
+  const [openEditUser, setOpenEditUser] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -150,33 +155,6 @@ export default function PeopleDirectory() {
     }
   };
 
-  const handleEditUser = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(api + "edit-user");
-      if (response.status === 200) {
-        alert("User Edited Successfully");
-        window.location.reload();
-      } else {
-        alert(response.data.message || "Error Editing User");
-      }
-    } catch (error) {
-      console.error("Error Editing User", error);
-      if (error.response) {
-        alert(
-          "Error from server: " +
-            error.response.status +
-            " - " +
-            error.response.data.message
-        );
-      } else if (error.request) {
-        alert("No response from the server");
-      } else {
-        alert("Error setting up the request: " + error.message);
-      }
-    }
-  };
-
   const filteredData = useMemo(() => {
     let result = data;
 
@@ -245,6 +223,11 @@ export default function PeopleDirectory() {
       <div className="p-2 relative w-full">
         {openAddUser ? (
           <AddUser />
+        ) : openEditUser ? (
+          <EditUser
+            user={selectedEditUser}
+            onClose={() => setEditSelectedUser(null)}
+          />
         ) : (
           <>
             <div className="flex items-center mb-4">
@@ -375,7 +358,11 @@ export default function PeopleDirectory() {
               </thead>
               <tbody>
                 {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="hover:bg-gray-100">
+                  <tr
+                    key={row.id}
+                    className="hover:bg-gray-100"
+                    onClick={() => setSelectedUser(row.original)}
+                  >
                     {row.getVisibleCells().map((cell) => (
                       <td
                         key={cell.id}
@@ -397,7 +384,10 @@ export default function PeopleDirectory() {
                     </td>
                     <td className="px-4 py-2 text-left text-gray-600">
                       <button
-                        onClick={() => handleEditUser(row.original)}
+                        onClick={() => {
+                          setEditSelectedUser(row.original);
+                          setOpenEditUser(true);
+                        }}
                         className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-700"
                       >
                         <FontAwesomeIcon icon={faPen} />
@@ -446,10 +436,17 @@ export default function PeopleDirectory() {
             </div>
           </>
         )}
+
         {showDeletePopup && (
           <DeleteConfirmationPopup
             onClose={() => setShowDeletePopup(false)}
             onDelete={handleConfirmDelete}
+          />
+        )}
+        {selectedUser && (
+          <UserDetailsSidebar
+            user={selectedUser}
+            onClose={() => setSelectedUser(null)}
           />
         )}
       </div>

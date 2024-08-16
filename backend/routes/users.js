@@ -11,6 +11,6 @@ router
 
 router.route("/delete-user").post(userController.deleteUser);
 
-router.route("/edit-user").post(userController.editUser);
+router.route("/edit-user").post(upload.single("profilePic"),userController.editUser);
 
 module.exports = router;

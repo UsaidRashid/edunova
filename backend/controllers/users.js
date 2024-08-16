@@ -1,6 +1,6 @@
 const User = require("../models/users");
 const cloudinary = require("cloudinary").v2;
-const mongoose =require('mongoose');
+const mongoose = require("mongoose");
 
 module.exports.fetchUsers = async (req, res) => {
   try {
@@ -52,6 +52,10 @@ module.exports.addUser = async (req, res) => {
         .json({ message: "User with this email already exists." });
     }
 
+    const teamsArray = Array.isArray(teams)
+      ? teams
+      : teams.split(",").map((team) => team.trim());
+
     const newUser = new User({
       name,
       email,
@@ -60,7 +64,7 @@ module.exports.addUser = async (req, res) => {
       nationality,
       contact,
       role,
-      teams,
+      teams: teamsArray,
       profilePic,
       status,
     });
@@ -106,6 +110,8 @@ module.exports.deleteUser = async (req, res) => {
 
 module.exports.editUser = async (req, res) => {
   try {
+    console.log(req.body);
+    console.log(req.file);
     const { name, email, role, teams, status, _id } = req.body;
 
     const profilePic = req.file ? req.file.filename : null;
@@ -118,7 +124,18 @@ module.exports.editUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid user ID." });
     }
 
-    const updateData = { name, email, role, teams, status, profilePic };
+    const teamsArray = Array.isArray(teams)
+      ? teams
+      : teams.split(",").map((team) => team.trim());
+
+    const updateData = {
+      name,
+      email,
+      role,
+      teams: teamsArray,
+      status,
+      profilePic,
+    };
 
     if (profilePic) {
       const cloudinaryUrl = cloudinary.url(profilePic, {
