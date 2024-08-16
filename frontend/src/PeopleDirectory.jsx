@@ -1,12 +1,16 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import Sidebar from "./Sidebar";
 import axios from "axios";
+
+const api = import.meta.env.VITE_BACKEND_API;
+
 const columnHelper = createColumnHelper();
 
 const columns = [
@@ -44,26 +48,137 @@ const columns = [
 ];
 
 export default function PeopleDirectory() {
-  const [data, _setData] = React.useState([]);
-  const rerender = React.useReducer(() => ({}), {})[1];
+  const [data, setData] = useState([]);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
 
-  React.useEffect(() => {
-    const main = async () => {
+  useEffect(() => {
+    const fetchData = async () => {
       try {
-        const response = await axios.post("http://localhost:3088/fetch-users");
-        console.log(response);
-        _setData(response.data.users);
+        const response = await axios.post(api + "fetch-users");
+        if (response.status === 200) {
+          setData(response.data.users);
+          const totalItems = response.data.users.length;
+          setTotalPages(Math.ceil(totalItems / pageSize));
+        } else {
+          alert(response.data.message || "Error Fetching Users");
+        }
       } catch (error) {
-        console.error(error);
+        console.error("Error Fetching Users", error);
+        alert("Error fetching users");
       }
     };
-    main();
-  });
+    fetchData();
+  }, [pageIndex, pageSize]);
+
+  const handleDelete = async (_id) => {
+    try {
+      const response = await axios.post(api + "delete-user", { _id });
+      if (response.status === 200) {
+        alert("User Deleted Successfully");
+        window.location.reload();
+      } else {
+        alert(response.data.message || "Error Deleting User");
+      }
+    } catch (error) {
+      console.error("Error Deleting User", error);
+      if (error.response) {
+        alert(
+          "Error from server: " +
+            error.response.status +
+            " - " +
+            error.response.data.message
+        );
+      } else if (error.request) {
+        alert("No response from the server");
+      } else {
+        alert("Error setting up the request: " + error.message);
+      }
+    }
+  };
+
+  const handleAddUser = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(api + "add-user");
+      if (response.status === 200) {
+        alert("User Added Successfully");
+        window.location.reload();
+      } else {
+        alert(response.data.message || "Error Adding User");
+      }
+    } catch (error) {
+      console.error("Error Adding User", error);
+      if (error.response) {
+        alert(
+          "Error from server: " +
+            error.response.status +
+            " - " +
+            error.response.data.message
+        );
+      } else if (error.request) {
+        alert("No response from the server");
+      } else {
+        alert("Error setting up the request: " + error.message);
+      }
+    }
+  };
+
+  const handleEditUser = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(api + "edit-user");
+      if (response.status === 200) {
+        alert("User Edited Successfully");
+        window.location.reload();
+      } else {
+        alert(response.data.message || "Error Editing User");
+      }
+    } catch (error) {
+      console.error("Error Editing User", error);
+      if (error.response) {
+        alert(
+          "Error from server: " +
+            error.response.status +
+            " - " +
+            error.response.data.message
+        );
+      } else if (error.request) {
+        alert("No response from the server");
+      } else {
+        alert("Error setting up the request: " + error.message);
+      }
+    }
+  };
+
+  const paginatedData = React.useMemo(() => {
+    const start = pageIndex * pageSize;
+    const end = start + pageSize;
+    return data.slice(start, end);
+  }, [data, pageIndex, pageSize]);
 
   const table = useReactTable({
-    data,
+    data: paginatedData,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    state: {
+      pagination: {
+        pageIndex,
+        pageSize,
+      },
+    },
+    onPaginationChange: (updater) => {
+      const newState = updater({
+        pageIndex,
+        pageSize,
+      });
+      setPageIndex(newState.pageIndex);
+      setPageSize(newState.pageSize);
+    },
+    manualPagination: true,
+    pageCount: totalPages,
   });
 
   return (
@@ -95,30 +210,53 @@ export default function PeopleDirectory() {
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
+                <td>
+                  <button onClick={() => handleDelete(row.original._id)}>
+                    Delete
+                  </button>
+                </td>
+                <td>
+                  <button onClick={() => handleEditUser(row.original)}>
+                    Edit
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
-          <tfoot>
-            {table.getFooterGroups().map((footerGroup) => (
-              <tr key={footerGroup.id}>
-                {footerGroup.headers.map((header) => (
-                  <th key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.footer,
-                          header.getContext()
-                        )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </tfoot>
         </table>
-        <div className="h-4" />
-        <button onClick={() => rerender()} className="border p-2">
-          Rerender
-        </button>
+        <div className="pagination">
+          <button
+            onClick={() => table.setPageIndex(0)}
+            disabled={!table.getCanPreviousPage()}
+          >
+            {"<<"}
+          </button>
+          <button
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            {"<"}
+          </button>
+          <button
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            {">"}
+          </button>
+          <button
+            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            disabled={!table.getCanNextPage()}
+          >
+            {">>"}
+          </button>
+          <span>
+            Page{" "}
+            <strong>
+              {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount() || 1}
+            </strong>
+          </span>
+        </div>
       </div>
     </div>
   );
