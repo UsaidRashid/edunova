@@ -6,43 +6,11 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import Sidebar from "./Sidebar";
-
-type Person = {
-  Name: string;
-  status: string;
-  role: string;
-  email: string;
-  teams: string[];
-};
-
-const defaultData: Person[] = [
-  {
-    Name: "Tanner Linsley",
-    status: "In Relationship",
-    role: "Developer",
-    email: "tanner.linsley@example.com",
-    teams: ["Frontend", "Backend"],
-  },
-  {
-    Name: "Tandy Miller",
-    status: "Single",
-    role: "Designer",
-    email: "tandy.miller@example.com",
-    teams: ["Design"],
-  },
-  {
-    Name: "Joe Dirte",
-    status: "Complicated",
-    role: "Manager",
-    email: "joe.dirte@example.com",
-    teams: ["Management", "Operations"],
-  },
-];
-
-const columnHelper = createColumnHelper<Person>();
+import axios from "axios";
+const columnHelper = createColumnHelper();
 
 const columns = [
-  columnHelper.accessor("Name", {
+  columnHelper.accessor("name", {
     header: () => <span>Name</span>,
     cell: (info) => <span>{info.getValue()}</span>,
     footer: (info) => info.column.id,
@@ -76,8 +44,21 @@ const columns = [
 ];
 
 export default function PeopleDirectory() {
-  const [data, _setData] = React.useState(() => [...defaultData]);
+  const [data, _setData] = React.useState([]);
   const rerender = React.useReducer(() => ({}), {})[1];
+
+  React.useEffect(() => {
+    const main = async () => {
+      try {
+        const response = await axios.post("http://localhost:3088/fetch-users");
+        console.log(response);
+        _setData(response.data.users);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    main();
+  });
 
   const table = useReactTable({
     data,
