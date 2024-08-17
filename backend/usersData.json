@@ -1,0 +1,294 @@
+[
+  {
+    "_id": {
+      "$oid": "66bf732ac8fd1e19269a9cf1"
+    },
+    "name": "John Doe Updated",
+    "email": "john.doe@example.com",
+    "profilePic": "https://randomuser.me/api/portraits/men/1.jpg",
+    "status": "Do Not Disturb",
+    "workEmail": "john.doe@company.com",
+    "gender": "Male",
+    "nationality": "American",
+    "contact": 1234567890,
+    "role": "Frontend Developer",
+    "teams": [
+      "Technology",
+      "Product",
+      "Design"
+    ],
+    "dob": {
+      "$date": "1985-05-15T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "66bf732ac8fd1e19269a9cf2"
+    },
+    "name": "Jane Smith Updated",
+    "email": "jane.smith@example.com",
+    "profilePic": "https://randomuser.me/api/portraits/women/2.jpg",
+    "status": "Active",
+    "workEmail": "jane.smith@company.com",
+    "gender": "Female",
+    "nationality": "British",
+    "contact": 2345678901,
+    "role": "Product Designer",
+    "teams": [
+      "Marketing"
+    ],
+    "dob": {
+      "$date": "1990-07-22T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "66bf732ac8fd1e19269a9cf3"
+    },
+    "name": "Alice Johnson Updated",
+    "email": "alice.johnson@example.com",
+    "profilePic": "https://randomuser.me/api/portraits/women/3.jpg",
+    "status": "Active",
+    "workEmail": "alice.johnson@company.com",
+    "gender": "Female",
+    "nationality": "Canadian",
+    "contact": 3456789012,
+    "role": "Product Manager",
+    "teams": [
+      "Design",
+      "Product"
+    ],
+    "dob": {
+      "$date": "1988-03-12T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "66bf732ac8fd1e19269a9cf4"
+    },
+    "name": "Bob Brown updated 2",
+    "email": "bob.brown@example.com",
+    "profilePic": "https://randomuser.me/api/portraits/men/4.jpg",
+    "status": "Inactive",
+    "workEmail": "bob.brown@company.com",
+    "gender": "Male",
+    "nationality": "Australian",
+    "contact": 4567890123,
+    "role": "Backend Developer",
+    "teams": [
+      "Technology",
+      "Design",
+      "Marketing"
+    ],
+    "dob": {
+      "$date": "1975-11-25T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "66bf732ac8fd1e19269a9cf5"
+    },
+    "name": "Charlie Davis",
+    "email": "charlie.davis@example.com",
+    "profilePic": "https://randomuser.me/api/portraits/men/5.jpg",
+    "status": "Active",
+    "workEmail": "charlie.davis@company.com",
+    "gender": "Male",
+    "nationality": "American",
+    "contact": 5678901234,
+    "role": "Frontend Developer",
+    "teams": [
+      "Design",
+      "Technology"
+    ],
+    "dob": {
+      "$date": "1992-09-30T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "66bf732ac8fd1e19269a9cf6"
+    },
+    "name": "Diana Evans",
+    "email": "diana.evans@example.com",
+    "profilePic": "https://randomuser.me/api/portraits/women/6.jpg",
+    "status": "Active",
+    "workEmail": "diana.evans@company.com",
+    "gender": "Female",
+    "nationality": "American",
+    "contact": 6789012345,
+    "role": "Product Designer",
+    "teams": [
+      "Design",
+      "Product",
+      "Technology"
+    ],
+    "dob": {
+      "$date": "1987-01-10T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "66bf732ac8fd1e19269a9cf7"
+    },
+    "name": "Edward Clark",
+    "email": "edward.clark@example.com",
+    "profilePic": "https://randomuser.me/api/portraits/men/7.jpg",
+    "status": "Active",
+    "workEmail": "edward.clark@company.com",
+    "gender": "Male",
+    "nationality": "British",
+    "contact": 7890123456,
+    "role": "Product Manager",
+    "teams": [
+      "Product"
+    ],
+    "dob": {
+      "$date": "1986-04-18T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "66bf732ac8fd1e19269a9cf8"
+    },
+    "name": "Fiona Garcia",
+    "email": "fiona.garcia@example.com",
+    "profilePic": "https://randomuser.me/api/portraits/women/8.jpg",
+    "status": "Active",
+    "workEmail": "fiona.garcia@company.com",
+    "gender": "Female",
+    "nationality": "Mexican",
+    "contact": 8901234567,
+    "role": "Backend Developer",
+    "teams": [
+      "Technology",
+      "Product"
+    ],
+    "dob": {
+      "$date": "1995-08-05T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "66bf732ac8fd1e19269a9cf9"
+    },
+    "name": "George Wilson",
+    "email": "george.wilson@example.com",
+    "profilePic": "https://randomuser.me/api/portraits/men/9.jpg",
+    "status": "Active",
+    "workEmail": "george.wilson@company.com",
+    "gender": "Male",
+    "nationality": "Canadian",
+    "contact": 9012345678,
+    "role": "Frontend Developer",
+    "teams": [
+      "Marketing"
+    ],
+    "dob": {
+      "$date": "1984-06-20T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "66bf732ac8fd1e19269a9cfa"
+    },
+    "name": "Hannah Martinez",
+    "email": "hannah.martinez@example.com",
+    "profilePic": "https://randomuser.me/api/portraits/women/10.jpg",
+    "status": "Inactive",
+    "workEmail": "hannah.martinez@company.com",
+    "gender": "Female",
+    "nationality": "Spanish",
+    "contact": 1023456789,
+    "role": "Product Manager",
+    "teams": [
+      "Product",
+      "Marketing"
+    ],
+    "dob": {
+      "$date": "1991-12-05T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "66bf732ac8fd1e19269a9cfb"
+    },
+    "name": "Ian Robinson",
+    "email": "ian.robinson@example.com",
+    "profilePic": "https://randomuser.me/api/portraits/men/11.jpg",
+    "status": "Active",
+    "workEmail": "ian.robinson@company.com",
+    "gender": "Male",
+    "nationality": "American",
+    "contact": 2134567890,
+    "role": "Backend Developer",
+    "teams": [
+      "Technology"
+    ],
+    "dob": {
+      "$date": "1989-11-11T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "66bf732ac8fd1e19269a9cfc"
+    },
+    "name": "Jessica Lee",
+    "email": "jessica.lee@example.com",
+    "profilePic": "https://randomuser.me/api/portraits/women/12.jpg",
+    "status": "Active",
+    "workEmail": "jessica.lee@company.com",
+    "gender": "Female",
+    "nationality": "Canadian",
+    "contact": 3145678901,
+    "role": "Product Designer",
+    "teams": [
+      "Design"
+    ],
+    "dob": {
+      "$date": "1993-10-10T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "66bf732ac8fd1e19269a9cfd"
+    },
+    "name": "Kevin White",
+    "email": "kevin.white@example.com",
+    "profilePic": "https://randomuser.me/api/portraits/men/13.jpg",
+    "status": "Active",
+    "workEmail": "kevin.white@company.com",
+    "gender": "Male",
+    "nationality": "Australian",
+    "contact": 4156789012,
+    "role": "Frontend Developer",
+    "teams": [
+      "Design",
+      "Technology"
+    ],
+    "dob": {
+      "$date": "1982-03-25T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "66bf732ac8fd1e19269a9cfe"
+    },
+    "name": "Laura Turner",
+    "email": "laura.turner@example.com",
+    "profilePic": "https://randomuser.me/api/portraits/women/14.jpg",
+    "status": "Inactive",
+    "workEmail": "laura.turner@company.com",
+    "gender": "Female",
+    "nationality": "British",
+    "contact": 5267890123,
+    "role": "Product Manager",
+    "teams": [
+      "Product",
+      "Design"
+    ],
+    "dob": {
+      "$date": "1983-07-19T00:00:00.000Z"
+    }
+  }
+]

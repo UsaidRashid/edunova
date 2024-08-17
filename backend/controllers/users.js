@@ -28,6 +28,7 @@ module.exports.addUser = async (req, res) => {
       role,
       teams,
       status,
+      dob,
     } = req.body;
 
     const profilePic = req.file ? req.file.path : null;
@@ -40,7 +41,8 @@ module.exports.addUser = async (req, res) => {
       !nationality ||
       !contact ||
       !role ||
-      !teams
+      !teams ||
+      !dob
     ) {
       return res.status(400).json({ message: "All fields are required." });
     }
@@ -67,6 +69,7 @@ module.exports.addUser = async (req, res) => {
       teams: teamsArray,
       profilePic,
       status,
+      dob: new Date(dob),
     });
 
     if (profilePic) {

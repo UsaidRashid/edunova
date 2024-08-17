@@ -16,6 +16,11 @@ const UserDetailsSidebar = ({ user, onClose }) => {
 
   if (!user) return null;
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toISOString().split("T")[0];
+  };
+
   return (
     <div className="fixed right-0 top-20 rounded-lg bg-white shadow-lg border-l border-gray-200 h-full z-50 w-3/5">
       <div className="bg-blue-700 text-white p-6 rounded-t-lg">
@@ -58,7 +63,7 @@ const UserDetailsSidebar = ({ user, onClose }) => {
         <div className="space-y-2">
           <div className="flex justify-between">
             <span>Date of Birth</span>
-            <span className="text-gray-700">{user.dob}</span>
+            <span className="text-gray-700">{formatDate(user.dob)}</span>
           </div>
           <div className="flex justify-between">
             <span>Gender</span>

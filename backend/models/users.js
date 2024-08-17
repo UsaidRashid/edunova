@@ -9,12 +9,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  profilePic : {
-    type:String,
+  profilePic: {
+    type: String,
   },
-  status :{
-    type:String,
-    default : 'Active'
+  status: {
+    type: String,
+    default: "Active",
   },
   workEmail: {
     type: String,
@@ -37,6 +37,10 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   teams: [String],
+  dob: {
+    type: Date,
+    required: false,
+  },
 });
 
 module.exports = mongoose.model("User", userSchema);

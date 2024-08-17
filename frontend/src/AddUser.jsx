@@ -40,6 +40,7 @@ const userSchema = z.object({
   nationality: z.enum(nationalityOptions, "Nationality is required"),
   contact: z.coerce.number().min(1000000000, "Invalid contact number"),
   role: z.enum(roleOptions, "Role is required"),
+  dob: z.string(),
 });
 
 const AddUser = () => {
@@ -79,6 +80,7 @@ const AddUser = () => {
     formData.append("role", data.role);
     formData.append("teams", selectedTeams);
     formData.append("profilePic", profilePic);
+    formData.append("dob", data.dob);
 
     try {
       const response = await axios.post(api + "add-user", formData, {
@@ -266,6 +268,23 @@ const AddUser = () => {
             </div>
           </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            {/* Date of Birth */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Date of Birth
+              </label>
+              <input
+                type="date"
+                {...register("dob")}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+              />
+              {errors.dob && (
+                <p className="text-red-500 text-sm">{errors.dob.message}</p>
+              )}
+            </div>
+          </div>
+
           {/* Profile Picture */}
           <div className="mb-6">
             <label
@@ -286,7 +305,7 @@ const AddUser = () => {
                   d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l.636-.636a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                 />
               </svg>
-               Upload A Profile Picture
+              Upload A Profile Picture
               <input
                 id="file-upload"
                 type="file"
