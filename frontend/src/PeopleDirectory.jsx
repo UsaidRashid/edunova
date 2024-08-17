@@ -138,6 +138,58 @@ export default function PeopleDirectory() {
     fetchData();
   }, [pageIndex, pageSize]);
 
+  useEffect(() => {
+    if (search) {
+      const query = search;
+      window.history.replaceState(
+        null,
+        "",
+        `/people-directory?query=${encodeURIComponent(query)}`
+      );
+    } else {
+      window.history.replaceState(null, "", `/people-directory`);
+    }
+  }, [search]);
+
+  useEffect(() => {
+    if (selectedRoles && selectedRoles.length > 0) {
+      const query = selectedRoles;
+      window.history.replaceState(
+        null,
+        "",
+        `/people-directory?query=${encodeURIComponent(query)}`
+      );
+    } else {
+      window.history.replaceState(null, "", `/people-directory`);
+    }
+  }, [selectedRoles]);
+
+  useEffect(() => {
+    if (selectedTeams && selectedTeams.length > 0) {
+      const query = selectedTeams;
+      window.history.replaceState(
+        null,
+        "",
+        `/people-directory?query=${encodeURIComponent(query)}`
+      );
+    } else {
+      window.history.replaceState(null, "", `/people-directory`);
+    }
+  }, [selectedTeams]);
+
+  useEffect(() => {
+    if (selectedUser) {
+      const query = selectedUser.name;
+      window.history.replaceState(
+        null,
+        "",
+        `/people-directory?query=${encodeURIComponent(query)}`
+      );
+    } else {
+      window.history.replaceState(null, "", `/people-directory`);
+    }
+  }, [selectedUser]);
+
   const DeleteConfirmationPopup = ({ onClose, onDelete }) => (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-80">
