@@ -15,8 +15,6 @@ module.exports.fetchUsers = async (req, res) => {
 };
 
 module.exports.addUser = async (req, res) => {
-  console.log(req.body);
-  console.log(req.file);
   try {
     const {
       name,
@@ -113,8 +111,6 @@ module.exports.deleteUser = async (req, res) => {
 
 module.exports.editUser = async (req, res) => {
   try {
-    console.log(req.body);
-    console.log(req.file);
     const { name, email, role, teams, status, _id } = req.body;
 
     const profilePic = req.file ? req.file.filename : null;

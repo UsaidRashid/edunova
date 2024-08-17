@@ -114,10 +114,12 @@ export default function PeopleDirectory() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedEditUser, setEditSelectedUser] = useState(null);
   const [openEditUser, setOpenEditUser] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const response = await axios.post(api + "fetch-users");
         if (response.status === 200) {
           setData(response.data.users);
@@ -129,6 +131,8 @@ export default function PeopleDirectory() {
       } catch (error) {
         console.error("Error Fetching Users", error);
         alert("Error fetching users");
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
@@ -289,7 +293,9 @@ export default function PeopleDirectory() {
             user={selectedEditUser}
             onClose={() => setEditSelectedUser(null)}
           />
-        ) : (
+        ) : loading ? (
+          <div className=" text-3xl">Fetching Data Please wait...</div>
+        ) : data && data.length > 0 ? (
           <>
             <nav class="flex justify-between items-center bg-gray-100 p-4 rounded-md shadow-md">
               <div class="flex items-center">
@@ -514,6 +520,8 @@ export default function PeopleDirectory() {
               </span>
             </div>
           </>
+        ) : (
+          !loading && <div>No Data Available</div>
         )}
 
         {showDeletePopup && (
