@@ -70,9 +70,7 @@ const EditUser = ({ user, onSave, onCancel }) => {
     formData.append("_id", user._id);
     formData.append("teams", selectedTeams);
 
-    if (profilePic) {
-      formData.append("profilePic", profilePic);
-    }
+    formData.append("profilePic", profilePic);
 
     try {
       const response = await axios.post(api + "edit-user", formData, {
