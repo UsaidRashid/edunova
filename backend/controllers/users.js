@@ -133,7 +133,6 @@ module.exports.editUser = async (req, res) => {
       role,
       teams: teamsArray,
       status,
-      profilePic,
     };
 
     if (profilePic) {
