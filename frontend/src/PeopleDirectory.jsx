@@ -106,8 +106,8 @@ export default function PeopleDirectory() {
   const [filterVisible, setFilterVisible] = useState(false);
   const [showRoleDropdown, setShowRoleDropdown] = useState(false);
   const [showTeamDropdown, setShowTeamDropdown] = useState(false);
-  const [selectedRole, setSelectedRole] = useState("");
-  const [selectedTeam, setSelectedTeam] = useState("");
+  const [selectedRoles, setSelectedRoles] = useState([]);
+  const [selectedTeams, setSelectedTeams] = useState([]);
   const [openAddUser, setOpenAddUser] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
@@ -198,6 +198,22 @@ export default function PeopleDirectory() {
     }
   };
 
+  const handleRoleSelection = (role) => {
+    setSelectedRoles((prevSelectedRoles) =>
+      prevSelectedRoles.includes(role)
+        ? prevSelectedRoles.filter((r) => r !== role)
+        : [...prevSelectedRoles, role]
+    );
+  };
+
+  const handleTeamSelection = (team) => {
+    setSelectedTeams((prevSelectedTeams) =>
+      prevSelectedTeams.includes(team)
+        ? prevSelectedTeams.filter((t) => t !== team)
+        : [...prevSelectedTeams, team]
+    );
+  };
+
   const filteredData = useMemo(() => {
     let result = data;
 
@@ -212,16 +228,18 @@ export default function PeopleDirectory() {
       );
     }
 
-    if (selectedRole) {
-      result = result.filter((row) => row.role === selectedRole);
+    if (selectedRoles.length > 0) {
+      result = result.filter((row) => selectedRoles.includes(row.role));
     }
 
-    if (selectedTeam) {
-      result = result.filter((row) => row.teams.includes(selectedTeam));
+    if (selectedTeams.length > 0) {
+      result = result.filter((row) =>
+        row.teams.some((team) => selectedTeams.includes(team))
+      );
     }
 
     return result;
-  }, [data, search, selectedRole, selectedTeam]);
+  }, [data, search, selectedRoles, selectedTeams]);
 
   const paginatedData = useMemo(() => {
     const start = pageIndex * pageSize;
@@ -259,14 +277,6 @@ export default function PeopleDirectory() {
 
   const toggleRoleDropdown = () => setShowRoleDropdown(!showRoleDropdown);
   const toggleTeamDropdown = () => setShowTeamDropdown(!showTeamDropdown);
-
-  const handleRoleSelection = (role) => {
-    setSelectedRole(selectedRole === role ? null : role);
-  };
-
-  const handleTeamSelection = (team) => {
-    setSelectedTeam(selectedTeam === team ? null : team);
-  };
 
   return (
     <div className="flex">
@@ -329,10 +339,7 @@ export default function PeopleDirectory() {
                 </button>
               </div>
               {filterVisible && (
-                <div
-                  className="absolute bg-white border border-gray-300 mt-2 p-4 rounded-lg shadow-lg mt-96 w-96 mx-96"
-                  
-                >
+                <div className="absolute bg-white border border-gray-300 mt-2 p-4 rounded-lg shadow-lg top-16 right-52 w-64">
                   {/* Role Filter */}
                   <div className="mb-4">
                     <button
@@ -344,57 +351,30 @@ export default function PeopleDirectory() {
                     </button>
                     {showRoleDropdown && (
                       <div className="mt-2 border border-gray-300 rounded-lg bg-white max-h-40 overflow-y-auto">
-                        <button
-                          onClick={() =>
-                            handleRoleSelection("Product Designer")
-                          }
-                          className={`block px-4 py-2 text-left hover:bg-gray-100 ${
-                            selectedRole === "Product Designer"
-                              ? "bg-gray-200"
-                              : ""
-                          }`}
-                        >
-                          Product Designer
-                        </button>
-                        <button
-                          onClick={() => handleRoleSelection("Product Manager")}
-                          className={`block px-4 py-2 text-left hover:bg-gray-100 ${
-                            selectedRole === "Product Manager"
-                              ? "bg-gray-200"
-                              : ""
-                          }`}
-                        >
-                          Product Manager
-                        </button>
-                        <button
-                          onClick={() =>
-                            handleRoleSelection("Frontend Developer")
-                          }
-                          className={`block px-4 py-2 text-left hover:bg-gray-100 ${
-                            selectedRole === "Frontend Developer"
-                              ? "bg-gray-200"
-                              : ""
-                          }`}
-                        >
-                          Frontend Developer
-                        </button>
-                        <button
-                          onClick={() =>
-                            handleRoleSelection("Backend Developer")
-                          }
-                          className={`block px-4 py-2 text-left hover:bg-gray-100 ${
-                            selectedRole === "Backend Developer"
-                              ? "bg-gray-200"
-                              : ""
-                          }`}
-                        >
-                          Backend Developer
-                        </button>
+                        {[
+                          "Product Designer",
+                          "Product Manager",
+                          "Frontend Developer",
+                          "Backend Developer",
+                        ].map((role) => (
+                          <label
+                            key={role}
+                            className="block px-4 py-2 hover:bg-gray-100"
+                          >
+                            <input
+                              type="checkbox"
+                              value={role}
+                              checked={selectedRoles.includes(role)}
+                              onChange={() => handleRoleSelection(role)}
+                              className="mr-2"
+                            />
+                            {role}
+                          </label>
+                        ))}
                       </div>
                     )}
                   </div>
 
-                  {/* Team Filter */}
                   <div>
                     <button
                       onClick={toggleTeamDropdown}
@@ -405,38 +385,23 @@ export default function PeopleDirectory() {
                     </button>
                     {showTeamDropdown && (
                       <div className="mt-2 border border-gray-300 rounded-lg bg-white max-h-40 overflow-y-auto">
-                        <button
-                          onClick={() => handleTeamSelection("Design")}
-                          className={`block px-4 py-2 text-left hover:bg-gray-100 ${
-                            selectedTeam === "Design" ? "bg-gray-200" : ""
-                          }`}
-                        >
-                          Design
-                        </button>
-                        <button
-                          onClick={() => handleTeamSelection("Product")}
-                          className={`block px-4 py-2 text-left hover:bg-gray-100 ${
-                            selectedTeam === "Product" ? "bg-gray-200" : ""
-                          }`}
-                        >
-                          Product
-                        </button>
-                        <button
-                          onClick={() => handleTeamSelection("Marketing")}
-                          className={`block px-4 py-2 text-left hover:bg-gray-100 ${
-                            selectedTeam === "Marketing" ? "bg-gray-200" : ""
-                          }`}
-                        >
-                          Marketing
-                        </button>
-                        <button
-                          onClick={() => handleTeamSelection("Technology")}
-                          className={`block px-4 py-2 text-left hover:bg-gray-100 ${
-                            selectedTeam === "Technology" ? "bg-gray-200" : ""
-                          }`}
-                        >
-                          Technology
-                        </button>
+                        {["Design", "Product", "Marketing", "Technology"].map(
+                          (team) => (
+                            <label
+                              key={team}
+                              className="block px-4 py-2 hover:bg-gray-100"
+                            >
+                              <input
+                                type="checkbox"
+                                value={team}
+                                checked={selectedTeams.includes(team)}
+                                onChange={() => handleTeamSelection(team)}
+                                className="mr-2"
+                              />
+                              {team}
+                            </label>
+                          )
+                        )}
                       </div>
                     )}
                   </div>
