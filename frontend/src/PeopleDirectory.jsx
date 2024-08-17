@@ -10,7 +10,12 @@ import {
 import Sidebar from "./Sidebar";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faPen, faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTrash,
+  faPen,
+  faPlus,
+  faFilter,
+} from "@fortawesome/free-solid-svg-icons";
 import AddUser from "./AddUser";
 import UserDetailsSidebar from "./UserDetailsSidebar";
 import EditUser from "./EditUser";
@@ -27,9 +32,23 @@ const columns = [
   }),
   columnHelper.accessor("status", {
     header: () => <span>Status</span>,
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => {
+      const status = info.getValue();
+      const statusColor = status === "Active" ? "bg-green-500" : "bg-red-500";
+      const textColor = status === "Active" ? "text-green-700" : "text-red-700";
+
+      return (
+        <div
+          className={`flex items-center space-x-2 px-3 py-1 rounded-full border ${textColor} border-${statusColor}`}
+        >
+          <span className={`block w-3 h-3 rounded-full ${statusColor}`}></span>
+          <span>{status}</span>
+        </div>
+      );
+    },
     footer: (info) => info.column.id,
   }),
+
   columnHelper.accessor("role", {
     header: () => <span>Role</span>,
     cell: (info) => <span>{info.getValue()}</span>,
@@ -42,13 +61,37 @@ const columns = [
   }),
   columnHelper.accessor("teams", {
     header: () => <span>Teams</span>,
-    cell: (info) => (
-      <ul>
-        {info.getValue().map((team) => (
-          <li key={team}>{team}</li>
-        ))}
-      </ul>
-    ),
+    cell: (info) => {
+      const teams = info.getValue();
+      const borderColors = [
+        "border-purple-500",
+        "border-light-blue-500",
+        "border-blue-900",
+        "border-black",
+      ];
+      const textColors = [
+        "text-purple-500",
+        "text-light-blue-500",
+        "text-blue-900",
+        "text-black",
+      ];
+
+      return (
+        <div className="flex space-x-2">
+          {teams.map((team, index) => (
+            <div
+              key={team}
+              className={`flex items-center justify-center px-3 py-1 rounded-full border ${
+                borderColors[index % borderColors.length]
+              } ${textColors[index % textColors.length]}`}
+              style={{ backgroundColor: "white" }}
+            >
+              {team}
+            </div>
+          ))}
+        </div>
+      );
+    },
     footer: (info) => info.column.id,
   }),
 ];
@@ -217,6 +260,14 @@ export default function PeopleDirectory() {
   const toggleRoleDropdown = () => setShowRoleDropdown(!showRoleDropdown);
   const toggleTeamDropdown = () => setShowTeamDropdown(!showTeamDropdown);
 
+  const handleRoleSelection = (role) => {
+    setSelectedRole(selectedRole === role ? null : role);
+  };
+
+  const handleTeamSelection = (team) => {
+    setSelectedTeam(selectedTeam === team ? null : team);
+  };
+
   return (
     <div className="flex">
       <Sidebar />
@@ -230,95 +281,159 @@ export default function PeopleDirectory() {
           />
         ) : (
           <>
-            <div className="flex items-center mb-4">
-              <input
-                type="text"
-                placeholder="Search..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="mr-2 p-1 border border-gray-300 rounded-lg w-full md:w-1/2 lg:w-1/3 xl:w-1/4"
-              />
-              <button
-                onClick={toggleFilter}
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-              >
-                Filter
-              </button>
-              <button
-                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700"
-                onClick={() => setOpenAddUser(true)}
-              >
-                <FontAwesomeIcon icon={faPlus} /> Add Member
-              </button>
+            <nav class="flex justify-between items-center bg-gray-100 p-4 rounded-md shadow-md">
+              <div class="flex items-center">
+                <h2 class="text-lg font-bold">Team members</h2>
+                <span class="ml-2 px-2 py-1 rounded-full bg-gray-200 text-gray-700 text-xs font-medium">
+                  {data.length} users
+                </span>
+              </div>
+              <div class="flex items-center">
+                <div class="relative w-64">
+                  <input
+                    type="text"
+                    placeholder="Search"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-indigo-500 focus:ring-2 focus:ring-opacity-50 focus:outline-none"
+                  />
+                  <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </span>
+                </div>
+                <button
+                  onClick={toggleFilter}
+                  class="ml-4 px-4 py-2 rounded-md bg-indigo-500 text-white font-medium hover:bg-indigo-600 focus:outline-none"
+                >
+                  <FontAwesomeIcon icon={faFilter} />
+                </button>
+                <button
+                  onClick={() => setOpenAddUser(true)}
+                  class="ml-4 px-4 py-2 rounded-md bg-indigo-500 text-white font-medium hover:bg-indigo-600 focus:outline-none"
+                >
+                  <span class="flex items-center">
+                    <FontAwesomeIcon icon={faPlus} />
+                    <span class="ml-2">ADD MEMBER</span>
+                  </span>
+                </button>
+              </div>
               {filterVisible && (
-                <div className="absolute bg-white border border-gray-300 mt-2 p-4 rounded-lg shadow-lg w-64 md:w-80 lg:w-96 xl:w-1/2">
+                <div
+                  className="absolute bg-white border border-gray-300 mt-2 p-4 rounded-lg shadow-lg mt-96 w-96 mx-96"
+                  
+                >
+                  {/* Role Filter */}
                   <div className="mb-4">
                     <button
                       onClick={toggleRoleDropdown}
-                      className="text-blue-500 block w-full text-left p-2 rounded-lg hover:bg-gray-100"
+                      className="text-blue-500 block w-full text-left p-2 rounded-lg hover:bg-gray-100 flex justify-between items-center"
                     >
                       Roles
+                      <span>{showRoleDropdown ? "▲" : "▼"}</span>
                     </button>
-
                     {showRoleDropdown && (
-                      <div className="mt-2 border border-gray-300 rounded-lg bg-white">
+                      <div className="mt-2 border border-gray-300 rounded-lg bg-white max-h-40 overflow-y-auto">
                         <button
-                          onClick={() => setSelectedRole("Product Designer")}
-                          className="block px-4 py-2 text-left hover:bg-gray-100"
+                          onClick={() =>
+                            handleRoleSelection("Product Designer")
+                          }
+                          className={`block px-4 py-2 text-left hover:bg-gray-100 ${
+                            selectedRole === "Product Designer"
+                              ? "bg-gray-200"
+                              : ""
+                          }`}
                         >
                           Product Designer
                         </button>
                         <button
-                          onClick={() => setSelectedRole("Product Manager")}
-                          className="block px-4 py-2 text-left hover:bg-gray-100"
+                          onClick={() => handleRoleSelection("Product Manager")}
+                          className={`block px-4 py-2 text-left hover:bg-gray-100 ${
+                            selectedRole === "Product Manager"
+                              ? "bg-gray-200"
+                              : ""
+                          }`}
                         >
                           Product Manager
                         </button>
                         <button
-                          onClick={() => setSelectedRole("Frontend Developer")}
-                          className="block px-4 py-2 text-left hover:bg-gray-100"
+                          onClick={() =>
+                            handleRoleSelection("Frontend Developer")
+                          }
+                          className={`block px-4 py-2 text-left hover:bg-gray-100 ${
+                            selectedRole === "Frontend Developer"
+                              ? "bg-gray-200"
+                              : ""
+                          }`}
                         >
                           Frontend Developer
                         </button>
                         <button
-                          onClick={() => setSelectedRole("Backend Developer")}
-                          className="block px-4 py-2 text-left hover:bg-gray-100"
+                          onClick={() =>
+                            handleRoleSelection("Backend Developer")
+                          }
+                          className={`block px-4 py-2 text-left hover:bg-gray-100 ${
+                            selectedRole === "Backend Developer"
+                              ? "bg-gray-200"
+                              : ""
+                          }`}
                         >
                           Backend Developer
                         </button>
                       </div>
                     )}
                   </div>
+
+                  {/* Team Filter */}
                   <div>
                     <button
                       onClick={toggleTeamDropdown}
-                      className="text-blue-500 block w-full text-left p-2 rounded-lg hover:bg-gray-100"
+                      className="text-blue-500 block w-full text-left p-2 rounded-lg hover:bg-gray-100 flex justify-between items-center"
                     >
                       Teams
+                      <span>{showTeamDropdown ? "▲" : "▼"}</span>
                     </button>
                     {showTeamDropdown && (
-                      <div className="mt-2 border border-gray-300 rounded-lg bg-white">
+                      <div className="mt-2 border border-gray-300 rounded-lg bg-white max-h-40 overflow-y-auto">
                         <button
-                          onClick={() => setSelectedTeam("Design")}
-                          className="block px-4 py-2 text-left hover:bg-gray-100"
+                          onClick={() => handleTeamSelection("Design")}
+                          className={`block px-4 py-2 text-left hover:bg-gray-100 ${
+                            selectedTeam === "Design" ? "bg-gray-200" : ""
+                          }`}
                         >
                           Design
                         </button>
                         <button
-                          onClick={() => setSelectedTeam("Product")}
-                          className="block px-4 py-2 text-left hover:bg-gray-100"
+                          onClick={() => handleTeamSelection("Product")}
+                          className={`block px-4 py-2 text-left hover:bg-gray-100 ${
+                            selectedTeam === "Product" ? "bg-gray-200" : ""
+                          }`}
                         >
                           Product
                         </button>
                         <button
-                          onClick={() => setSelectedTeam("Marketing")}
-                          className="block px-4 py-2 text-left hover:bg-gray-100"
+                          onClick={() => handleTeamSelection("Marketing")}
+                          className={`block px-4 py-2 text-left hover:bg-gray-100 ${
+                            selectedTeam === "Marketing" ? "bg-gray-200" : ""
+                          }`}
                         >
                           Marketing
                         </button>
                         <button
-                          onClick={() => setSelectedTeam("Technology")}
-                          className="block px-4 py-2 text-left hover:bg-gray-100"
+                          onClick={() => handleTeamSelection("Technology")}
+                          className={`block px-4 py-2 text-left hover:bg-gray-100 ${
+                            selectedTeam === "Technology" ? "bg-gray-200" : ""
+                          }`}
                         >
                           Technology
                         </button>
@@ -327,7 +442,8 @@ export default function PeopleDirectory() {
                   </div>
                 </div>
               )}
-            </div>
+            </nav>
+
             <table className="min-w-full table-auto">
               <thead className="bg-gray-100">
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -338,7 +454,7 @@ export default function PeopleDirectory() {
                         onClick={() =>
                           table.getColumn(header.id).toggleSorting()
                         }
-                        className="px-4 py-2 text-left text-gray-600"
+                        className="px-4 py-2 text-left text-gray-600 cursor-pointer"
                       >
                         {header.isPlaceholder
                           ? null
@@ -356,17 +472,15 @@ export default function PeopleDirectory() {
                   </tr>
                 ))}
               </thead>
+
               <tbody>
                 {table.getRowModel().rows.map((row) => (
-                  <tr
-                    key={row.id}
-                    className="hover:bg-gray-100"
-                    onClick={() => setSelectedUser(row.original)}
-                  >
+                  <tr key={row.id} className="hover:bg-gray-100">
                     {row.getVisibleCells().map((cell) => (
                       <td
                         key={cell.id}
                         className="px-4 py-2 text-left text-gray-600"
+                        onClick={() => setSelectedUser(row.original)}
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
@@ -377,7 +491,7 @@ export default function PeopleDirectory() {
                     <td className="px-4 py-2 text-left text-gray-600">
                       <button
                         onClick={() => handleDeleteClick(row.original)}
-                        className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+                        className=" px-4 py-2 rounded-lg"
                       >
                         <FontAwesomeIcon icon={faTrash} />
                       </button>
@@ -388,7 +502,7 @@ export default function PeopleDirectory() {
                           setEditSelectedUser(row.original);
                           setOpenEditUser(true);
                         }}
-                        className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-700"
+                        className=" px-4 py-2 rounded-lg"
                       >
                         <FontAwesomeIcon icon={faPen} />
                       </button>
