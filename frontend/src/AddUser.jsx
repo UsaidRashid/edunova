@@ -115,6 +115,7 @@ const AddUser = () => {
     <div className="min-h-screen bg-gray-100 p-10">
       <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold mb-6">Add User</h2>
+
         <form onSubmit={handleSubmit(handleAddUser)}>
           {/* Name and Email */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -322,6 +323,12 @@ const AddUser = () => {
               className="px-6 py-2 bg-emerald-600 text-white font-medium rounded-md shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
             >
               Add User
+            </button>
+            <button
+              onClick={() => window.location.reload()} 
+              className="mx-4 px-4 py-2 bg-red-600 text-white font-medium rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 w-28"
+            >
+              Cancel
             </button>
           </div>
         </form>
