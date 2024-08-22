@@ -10,12 +10,7 @@ import {
 import Sidebar from "./Sidebar";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faTrash,
-  faPen,
-  faPlus,
-  faFilter,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import AddUser from "./AddUser";
 import UserDetailsSidebar from "./UserDetailsSidebar";
 import EditUser from "./EditUser";
@@ -27,106 +22,6 @@ const api = import.meta.env.VITE_BACKEND_API;
 const columnHelper = createColumnHelper();
 
 const predefinedOrder = ["Design", "Product", "Marketing", "Technology"];
-
-const columns = [
-  columnHelper.accessor("name", {
-    header: () => <span>Name</span>,
-    cell: (info) => {
-      const name = info.getValue();
-      const profilePic = info.row.original.profilePic;
-
-      return (
-        <div className="flex items-center space-x-3">
-          <img
-            src={profilePic || profile}
-            alt={`${name}`}
-            className="w-8 h-8 rounded-full"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = profile;
-            }}
-          />
-
-          <div>
-            <div className="font-semibold text-gray-800">{name}</div>
-
-            <div className="text-gray-500 text-sm">
-              @{name.split(" ")[0].toLowerCase()}
-            </div>
-          </div>
-        </div>
-      );
-    },
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("status", {
-    header: () => <span>Status</span>,
-    cell: (info) => {
-      const status = info.getValue();
-      const statusColor = status === "Active" ? "bg-green-500" : "bg-red-500";
-      const textColor = status === "Active" ? "text-green-700" : "text-red-700";
-
-      return (
-        <div
-          className={`flex items-center space-x-1 rounded border text-black`}
-        >
-          <span className={`mx-2 w-2 h-2 rounded-full ${statusColor}`}></span>
-          <span>{status}</span>
-        </div>
-      );
-    },
-    footer: (info) => info.column.id,
-  }),
-
-  columnHelper.accessor("role", {
-    header: () => <span>Role</span>,
-    cell: (info) => <span>{info.getValue()}</span>,
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("email", {
-    header: () => <span>Email</span>,
-    cell: (info) => <a href={`mailto:${info.getValue()}`}>{info.getValue()}</a>,
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("teams", {
-    header: () => <span>Teams</span>,
-    cell: (info) => {
-      const teams = info.getValue();
-      const sortedTeams = teams.sort(
-        (a, b) => predefinedOrder.indexOf(a) - predefinedOrder.indexOf(b)
-      );
-      const borderColors = [
-        "border-purple-300",
-        "border-blue-300",
-        "border-blue-500",
-        "border-gray-300",
-      ];
-      const textColors = [
-        "text-purple-500",
-        "text-blue-500",
-        "text-indigo-500",
-        "text-black-900",
-      ];
-
-      return (
-        <div className="flex space-x-2">
-          {sortedTeams.map((team, index) => (
-            <div
-              key={team}
-              className={`flex items-center justify-center px-3 py-1 rounded-full border font-semibold ${
-                borderColors[index % borderColors.length]
-              } ${textColors[index % textColors.length]}`}
-              style={{ backgroundColor: "white" }}
-            >
-              {sortedTeams.length == 4 && team === "Technology" ? "+4" : team}
-            </div>
-          ))}
-        </div>
-      );
-    },
-    footer: (info) => info.column.id,
-  }),
-];
 
 export default function PeopleDirectory() {
   const [data, setData] = useState([]);
@@ -147,6 +42,7 @@ export default function PeopleDirectory() {
   const [selectedEditUser, setEditSelectedUser] = useState(null);
   const [openEditUser, setOpenEditUser] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedRowId, setSelectedRowId] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -221,6 +117,149 @@ export default function PeopleDirectory() {
       window.history.replaceState(null, "", `/people-directory`);
     }
   }, [selectedUser]);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toISOString().split("T")[0];
+  };
+
+  const columns = [
+    columnHelper.accessor("name", {
+      header: () => <span>Name</span>,
+      cell: (info) => {
+        const name = info.getValue();
+        const profilePic = info.row.original.profilePic;
+
+        return (
+          <div className="flex items-center space-x-3">
+            <img
+              src={profilePic || profile}
+              alt={`${name}`}
+              className="w-8 h-8 rounded-full"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = profile;
+              }}
+            />
+
+            <div>
+              <div className="font-semibold text-gray-800">{name}</div>
+
+              <div className="text-gray-500 text-sm">
+                @{name.split(" ")[0].toLowerCase()}
+              </div>
+            </div>
+          </div>
+        );
+      },
+      footer: (info) => info.column.id,
+    }),
+    columnHelper.accessor("status", {
+      header: () => <span>Status</span>,
+      cell: (info) => {
+        const status = info.getValue();
+        const statusColor = status === "Active" ? "bg-green-500" : "bg-red-500";
+        const textColor =
+          status === "Active" ? "text-green-700" : "text-red-700";
+
+        return (
+          <div
+            className={`flex items-center space-x-1 rounded border text-black`}
+          >
+            <span className={`mx-2 w-2 h-2 rounded-full ${statusColor}`}></span>
+            <span>{status}</span>
+          </div>
+        );
+      },
+      footer: (info) => info.column.id,
+    }),
+
+    columnHelper.accessor("role", {
+      header: () => <span>Role</span>,
+      cell: (info) => <span>{info.getValue()}</span>,
+      footer: (info) => info.column.id,
+    }),
+    columnHelper.accessor("email", {
+      header: () => <span>Email</span>,
+      cell: (info) => {
+        const email = info.getValue();
+        // const isSelected = info.row.id === selectedRowId;
+        // const dob = info.row.original.dob;
+        // const contact = info.row.original.contact;
+
+        // if (isSelected) {
+        //   return (
+        //     <div className="space-y-2">
+        //       <div>
+        //         <strong>DOB:</strong> {formatDate(dob)}
+        //       </div>
+        //       <div>
+        //         <strong>Contact:</strong> {contact}
+        //       </div>
+        //     </div>
+        //   );
+        // }
+
+        return <a href={`mailto:${email}`}>{email}</a>;
+      },
+      footer: (info) => info.column.id,
+    }),
+    columnHelper.accessor("teams", {
+      header: () => <span>Teams</span>,
+      cell: (info) => {
+        // const isSelected = info.row.id === selectedRowId;
+        // const gender = info.row.original.gender;
+        // const nationality = info.row.original.nationality;
+
+        // if (isSelected) {
+        //   return (
+        //     <div className="space-y-2">
+        //       <div>
+        //         <strong>Gender:</strong> {gender}
+        //       </div>
+        //       <div>
+        //         <strong>Nationality:</strong> {nationality}
+        //       </div>
+        //     </div>
+        //   );
+        // }
+
+        const teams = info.getValue();
+        const sortedTeams = teams.sort(
+          (a, b) => predefinedOrder.indexOf(a) - predefinedOrder.indexOf(b)
+        );
+        const borderColors = [
+          "border-purple-300",
+          "border-blue-300",
+          "border-blue-500",
+          "border-gray-300",
+        ];
+        const textColors = [
+          "text-purple-500",
+          "text-blue-500",
+          "text-indigo-500",
+          "text-black-900",
+        ];
+
+        return (
+          <div className="flex space-x-2">
+            {sortedTeams.map((team, index) => (
+              <div
+                key={team}
+                className={`flex items-center justify-center px-3 py-1 rounded-full border font-semibold ${
+                  borderColors[index % borderColors.length]
+                } ${textColors[index % textColors.length]}`}
+                style={{ backgroundColor: "white" }}
+              >
+                {sortedTeams.length == 4 && team === "Technology" ? "+4" : team}
+              </div>
+            ))}
+          </div>
+        );
+      },
+      footer: (info) => info.column.id,
+    }),
+  ];
 
   const DeleteConfirmationPopup = ({ onClose, onDelete }) => (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
@@ -365,6 +404,10 @@ export default function PeopleDirectory() {
 
   const toggleRoleDropdown = () => setShowRoleDropdown(!showRoleDropdown);
   const toggleTeamDropdown = () => setShowTeamDropdown(!showTeamDropdown);
+
+  const handleRowClick = (rowId) => {
+    setSelectedRowId(rowId === selectedRowId ? null : rowId);
+  };
 
   return (
     <div className="flex">
@@ -540,6 +583,7 @@ export default function PeopleDirectory() {
                   <tr
                     key={row.id}
                     className="hover:bg-gray-100 border odd:bg-purple-50 even:bg-white"
+                    onClick={() => handleRowClick(row.id)}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <td
