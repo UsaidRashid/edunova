@@ -19,6 +19,7 @@ import {
 import AddUser from "./AddUser";
 import UserDetailsSidebar from "./UserDetailsSidebar";
 import EditUser from "./EditUser";
+import filter from "./filter.svg";
 
 const api = import.meta.env.VITE_BACKEND_API;
 
@@ -348,11 +349,14 @@ export default function PeopleDirectory() {
         ) : loading ? (
           <div className=" text-3xl">Fetching Data Please wait...</div>
         ) : data && data.length > 0 ? (
-          <>
-            <nav class="flex justify-between items-center bg-gray-100 p-4 rounded-md shadow-md">
+          <div className="border rounded-md">
+            <nav class="flex justify-between items-center p-4">
               <div class="flex items-center">
-                <h2 class="text-lg font-bold">Team members</h2>
-                <span class="ml-2 px-2 py-1 rounded-full bg-gray-200 text-gray-700 text-xs font-medium">
+                <h2 class="text-lg font-semibold">Team members</h2>
+                <span
+                  class="ml-2 px-2 py-1 rounded-full text-xs font-medium"
+                  style={{ backgroundColor: "#e9d5ff", color: "#6d47c7" }}
+                >
                   {data.length} users
                 </span>
               </div>
@@ -363,9 +367,9 @@ export default function PeopleDirectory() {
                     placeholder="Search"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-indigo-500 focus:ring-2 focus:ring-opacity-50 focus:outline-none"
+                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-indigo-500 focus:ring-2 focus:ring-opacity-50 focus:outline-none bg-purple-50 border-b-black"
                   />
-                  <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
+                  <span class="absolute right-4 top-1/2 -translate-y-1/2 text-purple-600">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       class="h-5 w-5"
@@ -382,13 +386,14 @@ export default function PeopleDirectory() {
                 </div>
                 <button
                   onClick={toggleFilter}
-                  class="ml-4 px-4 py-2 rounded-md bg-indigo-500 text-white font-medium hover:bg-indigo-600 focus:outline-none"
+                  class="ml-4 py-2 rounded-md font-medium focus:outline-none"
                 >
-                  <FontAwesomeIcon icon={faFilter} />
+                  <img src={filter} alt="" srcset="" />
                 </button>
                 <button
                   onClick={() => setOpenAddUser(true)}
-                  class="ml-4 px-4 py-2 rounded-md bg-indigo-500 text-white font-medium hover:bg-indigo-600 focus:outline-none"
+                  class="ml-4 px-4 py-2 rounded-md text-white font-medium hover:bg-indigo-600 focus:outline-none"
+                  style={{ backgroundColor: "#6941c6" }}
                 >
                   <span class="flex items-center">
                     <FontAwesomeIcon icon={faPlus} />
@@ -398,7 +403,6 @@ export default function PeopleDirectory() {
               </div>
               {filterVisible && (
                 <div className="absolute bg-white border border-gray-300 mt-2 p-4 rounded-lg shadow-lg top-16 right-52 w-64">
-                  {/* Role Filter */}
                   <div className="mb-4">
                     <button
                       onClick={toggleRoleDropdown}
@@ -467,17 +471,17 @@ export default function PeopleDirectory() {
               )}
             </nav>
 
-            <table className="min-w-full table-auto">
-              <thead className="bg-gray-100">
+            <table className="w-full table-auto">
+              <thead className="bg-white">
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id}>
+                  <tr key={headerGroup.id} className="border">
                     {headerGroup.headers.map((header) => (
                       <th
                         key={header.id}
                         onClick={() =>
                           table.getColumn(header.id).toggleSorting()
                         }
-                        className="px-4 py-2 text-left text-gray-600 cursor-pointer"
+                        className="px-4 py-2 text-left text-gray-500 font-semibold cursor-pointer"
                       >
                         {header.isPlaceholder
                           ? null
@@ -485,11 +489,15 @@ export default function PeopleDirectory() {
                               header.column.columnDef.header,
                               header.getContext()
                             )}
-                        {header.column.getIsSorted()
-                          ? header.column.getIsSorted() === "asc"
-                            ? " 🔼"
-                            : " 🔽"
-                          : null}
+                        {header.column.getIsSorted() ? (
+                          header.column.getIsSorted() === "asc" ? (
+                            <i class="fa-solid fa-arrow-up mx-2"></i>
+                          ) : (
+                            <i class="fa-solid fa-arrow-down mx-2"></i>
+                          )
+                        ) : header.column.columnDef.accessorKey === "role" ? (
+                          <i className="fa-regular fa-circle-question mx-2"></i>
+                        ) : null}
                       </th>
                     ))}
                   </tr>
@@ -498,7 +506,7 @@ export default function PeopleDirectory() {
 
               <tbody>
                 {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="hover:bg-gray-100">
+                  <tr key={row.id} className="hover:bg-gray-100 border">
                     {row.getVisibleCells().map((cell) => (
                       <td
                         key={cell.id}
@@ -511,67 +519,80 @@ export default function PeopleDirectory() {
                         )}
                       </td>
                     ))}
-                    <td className="px-4 py-2 text-left text-gray-600">
+                    <td className="text-right text-gray-600">
                       <button
                         onClick={() => handleDeleteClick(row.original)}
-                        className=" px-4 py-2 rounded-lg"
+                        className="p-2 rounded-lg"
                       >
-                        <FontAwesomeIcon icon={faTrash} />
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          height="24px"
+                          viewBox="0 -960 960 960"
+                          width="24px"
+                          fill="#6b7280"
+                        >
+                          <path d="M292.31-140q-29.92 0-51.12-21.19Q220-182.39 220-212.31V-720h-40v-60h180v-35.38h240V-780h180v60h-40v507.69Q740-182 719-161q-21 21-51.31 21H292.31ZM680-720H280v507.69q0 5.39 3.46 8.85t8.85 3.46h375.38q4.62 0 8.46-3.85 3.85-3.84 3.85-8.46V-720ZM376.16-280h59.99v-360h-59.99v360Zm147.69 0h59.99v-360h-59.99v360ZM280-720v520-520Z" />
+                        </svg>
                       </button>
                     </td>
-                    <td className="px-4 py-2 text-left text-gray-600">
+                    <td className="text-left text-gray-600">
                       <button
                         onClick={() => {
                           setEditSelectedUser(row.original);
                           setOpenEditUser(true);
                         }}
-                        className=" px-4 py-2 rounded-lg"
+                        className="p-2 rounded-lg"
                       >
-                        <FontAwesomeIcon icon={faPen} />
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          height="24px"
+                          viewBox="0 -960 960 960"
+                          width="24px"
+                          fill="#6b7280"
+                        >
+                          <path d="M200-200h50.46l409.46-409.46-50.46-50.46L200-250.46V-200Zm-60 60v-135.38l527.62-527.39q9.07-8.24 20.03-12.73 10.97-4.5 23-4.5t23.3 4.27q11.28 4.27 19.97 13.58l48.85 49.46q9.31 8.69 13.27 20 3.96 11.31 3.96 22.62 0 12.07-4.12 23.03-4.12 10.97-13.11 20.04L275.38-140H140Zm620.38-570.15-50.23-50.23 50.23 50.23Zm-126.13 75.9-24.79-25.67 50.46 50.46-25.67-24.79Z" />
+                        </svg>
                       </button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            <div className="pagination mt-4 flex justify-center">
-              <button
-                onClick={() => table.setPageIndex(0)}
-                disabled={!table.getCanPreviousPage()}
-                className="mr-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-l"
-              >
-                {"<<"}
-              </button>
+            <div className="pagination mt-4 flex justify-between items-center space-x-2">
               <button
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="mr-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4"
+                className="flex items-center bg-white text-gray-900 border border-gray-300 hover:bg-gray-100 px-4 py-2 rounded-lg m-3 font-semibold"
               >
-                {"<"}
+                <i className="fa-solid fa-arrow-left mr-2"></i> Previous
               </button>
+
+              <div className="flex">
+                {Array.from({ length: table.getPageCount() }, (_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => table.setPageIndex(i)}
+                    className={`px-4 py-2  ${
+                      table.getState().pagination.pageIndex === i
+                        ? " text-gray-800 font-semibold"
+                        : "text-gray-600 "
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
+
               <button
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
-                className="mr-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4"
+                className="flex items-center bg-white text-gray-900 border border-gray-300 hover:bg-gray-100 px-4 py-2 rounded-lg font-semibold"
+                style={{ marginRight: "15px" }}
               >
-                {">"}
+                Next <i className="fa-solid fa-arrow-right ml-2"></i>
               </button>
-              <button
-                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                disabled={!table.getCanNextPage()}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-r"
-              >
-                {">>"}
-              </button>
-              <span className="ml-2 text-gray-600">
-                Page{" "}
-                <strong>
-                  {table.getState().pagination.pageIndex + 1} of{" "}
-                  {table.getPageCount()}
-                </strong>
-              </span>
             </div>
-          </>
+          </div>
         ) : (
           !loading && <div>No Data Available</div>
         )}
