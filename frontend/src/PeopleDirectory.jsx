@@ -20,15 +20,43 @@ import AddUser from "./AddUser";
 import UserDetailsSidebar from "./UserDetailsSidebar";
 import EditUser from "./EditUser";
 import filter from "./filter.svg";
+import profile from "./profile.png";
 
 const api = import.meta.env.VITE_BACKEND_API;
 
 const columnHelper = createColumnHelper();
 
+const predefinedOrder = ["Design", "Product", "Marketing", "Technology"];
+
 const columns = [
   columnHelper.accessor("name", {
     header: () => <span>Name</span>,
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => {
+      const name = info.getValue();
+      const profilePic = info.row.original.profilePic;
+
+      return (
+        <div className="flex items-center space-x-3">
+          <img
+            src={profilePic || profile}
+            alt={`${name}`}
+            className="w-8 h-8 rounded-full"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = profile;
+            }}
+          />
+
+          <div>
+            <div className="font-semibold text-gray-800">{name}</div>
+
+            <div className="text-gray-500 text-sm">
+              @{name.split(" ")[0].toLowerCase()}
+            </div>
+          </div>
+        </div>
+      );
+    },
     footer: (info) => info.column.id,
   }),
   columnHelper.accessor("status", {
@@ -40,9 +68,9 @@ const columns = [
 
       return (
         <div
-          className={`flex items-center space-x-2 px-3 py-1 rounded-full border ${textColor} border-${statusColor}`}
+          className={`flex items-center space-x-1 rounded border text-black`}
         >
-          <span className={`block w-3 h-3 rounded-full ${statusColor}`}></span>
+          <span className={`mx-2 w-2 h-2 rounded-full ${statusColor}`}></span>
           <span>{status}</span>
         </div>
       );
@@ -64,30 +92,33 @@ const columns = [
     header: () => <span>Teams</span>,
     cell: (info) => {
       const teams = info.getValue();
+      const sortedTeams = teams.sort(
+        (a, b) => predefinedOrder.indexOf(a) - predefinedOrder.indexOf(b)
+      );
       const borderColors = [
-        "border-purple-500",
-        "border-light-blue-500",
-        "border-blue-900",
-        "border-black",
+        "border-purple-300",
+        "border-blue-300",
+        "border-blue-500",
+        "border-gray-300",
       ];
       const textColors = [
         "text-purple-500",
-        "text-light-blue-500",
-        "text-blue-900",
-        "text-black",
+        "text-blue-500",
+        "text-indigo-500",
+        "text-black-900",
       ];
 
       return (
         <div className="flex space-x-2">
-          {teams.map((team, index) => (
+          {sortedTeams.map((team, index) => (
             <div
               key={team}
-              className={`flex items-center justify-center px-3 py-1 rounded-full border ${
+              className={`flex items-center justify-center px-3 py-1 rounded-full border font-semibold ${
                 borderColors[index % borderColors.length]
               } ${textColors[index % textColors.length]}`}
               style={{ backgroundColor: "white" }}
             >
-              {team}
+              {sortedTeams.length==4 && team === "Technology" ? '+4' : team}
             </div>
           ))}
         </div>
@@ -506,7 +537,7 @@ export default function PeopleDirectory() {
 
               <tbody>
                 {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="hover:bg-gray-100 border">
+                  <tr key={row.id} className="hover:bg-gray-100 border odd:bg-purple-50 even:bg-white">
                     {row.getVisibleCells().map((cell) => (
                       <td
                         key={cell.id}

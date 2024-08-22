@@ -49,10 +49,15 @@ const EditUser = ({ user, onSave, onCancel }) => {
 
   const handleTeamChange = (event) => {
     const { value, checked } = event.target;
-    setSelectedTeams((prev) =>
-      checked ? [...prev, value] : prev.filter((team) => team !== value)
-    );
+    setSelectedTeams((prev) => {
+      const updatedTeams = checked
+        ? [...prev, value]
+        : prev.filter((team) => team !== value);
+      setValue("teams", updatedTeams);
+      return updatedTeams;
+    });
   };
+  
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -268,6 +273,7 @@ const EditUser = ({ user, onSave, onCancel }) => {
                   value={team}
                   className="form-checkbox h-5 w-5 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
                   {...register("teams")}
+                  onChange={handleTeamChange}
                 />
                 <label
                   htmlFor={`team-${team}`}

@@ -22,31 +22,34 @@ const UserDetailsSidebar = ({ user, onClose }) => {
   };
 
   return (
-    <div className="fixed right-0 top-20 rounded-lg bg-white shadow-lg border-l border-gray-200 h-full z-50 w-3/5">
-      <div className="bg-blue-700 text-white p-6 rounded-t-lg">
+    <div className="fixed right-0 top-10 rounded-lg bg-white shadow-lg border-l border-gray-200  w-3/5 overflow-auto z-50">
+      <div
+        className="text-white p-4 rounded-t-lg"
+        style={{ backgroundColor: "#2a5b7e" }}
+      >
         <div className="flex justify-between items-start">
           <div className="flex items-center">
             <img
               src={user.profilePic || profile}
               alt="profile"
-              className="w-16 h-16 object-cover rounded-full mr-4"
+              className="w-28 h-28 object-cover rounded-full mr-4"
               onError={(e) => {
                 e.target.src = profile;
               }}
             />
 
             <div>
-              <h2 className="text-xl font-semibold">{user.name}</h2>
-              <div className="flex items-center">
-                <div className="text-sm my-1 flex flex-col items-center">
-                  <span className="text-blue-200 mx-2">{username}</span>
-                  <span className="text-blue-200 mx-2">User ID</span>
+              <h2 className="text-xl font-semibold ms-2">{user.name}</h2>
+              <div className="flex items-center mt-2">
+                <div className="text-sm my-1 flex flex-col">
+                  <span className="text-white mx-2">{username}</span>
+                  <span className="text-white mx-2 pt-1">User ID</span>
                 </div>
                 <div className="border-r border-gray-300 mx-2 h-6"></div>
 
-                <div className="text-sm my-1 flex flex-col items-center">
+                <div className="text-sm my-1 flex flex-col">
                   <span className="mx-2">{user.role}</span>
-                  <span className="mx-2">Role</span>
+                  <span className="mx-2 pt-1">Role</span>
                 </div>
               </div>
             </div>
@@ -60,43 +63,63 @@ const UserDetailsSidebar = ({ user, onClose }) => {
         </div>
       </div>
 
-      <div className="p-6">
-        <h3 className="text-lg font-semibold mb-4 text-gray-700">
+      <div className="p-4">
+        <h3
+          className="text-lg p-2 font-semibold mb-4 text-gray-700 rounded-md"
+          style={{ backgroundColor: "#eff5fa" }}
+        >
           Personal Information
         </h3>
         <div className="space-y-2">
-          <div className="flex justify-between">
-            <span>Date of Birth</span>
-            <span className="text-gray-700">{formatDate(user.dob)}</span>
+          <div className="flex w-3/5">
+            <span className="flex-grow">Date of Birth</span>
+            <span className="text-gray-700 text-left w-1/2">
+              {formatDate(user.dob)}
+            </span>
           </div>
-          <div className="flex justify-between">
-            <span>Gender</span>
-            <span className="text-gray-700">{user.gender}</span>
+          <hr />
+          <div className="flex w-3/5">
+            <span className="flex-grow">Gender</span>
+            <span className="text-gray-700 text-left w-1/2">{user.gender}</span>
           </div>
-          <div className="flex justify-between">
-            <span>Nationality</span>
-            <span className="text-gray-700">{user.nationality}</span>
+          <hr />
+          <div className="flex w-3/5">
+            <span className="flex-grow">Nationality</span>
+            <span className="text-gray-700 text-left w-1/2">
+              {user.nationality}
+            </span>
           </div>
-          <div className="flex justify-between">
-            <span>Contact no.</span>
-            <span className="text-gray-700">{user.contact}</span>
+          <hr />
+          <div className="flex w-3/5">
+            <span className="flex-grow">Contact no.</span>
+            <span className="text-gray-700 text-left w-1/2">
+              {user.contact}
+            </span>
           </div>
-          <div className="flex justify-between">
-            <span>E-mail Address</span>
-            <span className="text-gray-700">{user.email}</span>
+          <hr />
+          <div className="flex w-3/5">
+            <span className="flex-grow">E-mail Address</span>
+            <span className="text-gray-700 text-left w-1/2">{user.email}</span>
           </div>
-          <div className="flex justify-between">
-            <span>Work email Address</span>
-            <span className="text-gray-700">{user.workEmail}</span>
+          <hr />
+          <div className="flex w-3/5">
+            <span className="flex-grow">Work email Address</span>
+            <span className="text-gray-700 text-left w-1/2">
+              {user.workEmail}
+            </span>
           </div>
+          <hr />
         </div>
       </div>
 
-      <div className="p-6">
-        <h3 className="text-lg font-semibold mb-4 text-gray-700">
+      <div className="px-4">
+        <h3
+          className="text-lg p-2 font-semibold text-gray-700 rounded-md"
+          style={{ backgroundColor: "#eff5fa" }}
+        >
           Research & Publication
         </h3>
-        <div className="border-t border-gray-300 pt-4">
+        <div className="p-2">
           <h4 className="text-md font-bold mb-2 text-gray-700">
             AI and User Experience: The Future of Design
           </h4>
@@ -111,7 +134,8 @@ const UserDetailsSidebar = ({ user, onClose }) => {
               See More...
             </a>
           </p>
-          <button className="bg-red-500 text-white font-bold py-2 px-4 rounded-lg mt-4">
+          <button className=" text-orange-600 text-2xl font-semibold py-2 px-4 rounded-lg mt-4">
+            <i class="fa-solid fa-arrow-up rotate-45 me-2"></i>
             SEE PUBLICATION
           </button>
         </div>
