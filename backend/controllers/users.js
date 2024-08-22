@@ -113,7 +113,7 @@ module.exports.editUser = async (req, res) => {
   try {
     const { name, email, role, teams, status, _id } = req.body;
 
-    const profilePic = req.file ? req.file.filename : null;
+    const profilePic = req.file ? req.file.filename : req.body.profilePic;
 
     if (!name || !email || !status || !role || !teams) {
       return res.status(400).json({ message: "All fields are required." });

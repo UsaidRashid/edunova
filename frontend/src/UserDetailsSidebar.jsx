@@ -30,7 +30,11 @@ const UserDetailsSidebar = ({ user, onClose }) => {
               src={user.profilePic || profile}
               alt="profile"
               className="w-16 h-16 object-cover rounded-full mr-4"
+              onError={(e) => {
+                e.target.src = profile;
+              }}
             />
+
             <div>
               <h2 className="text-xl font-semibold">{user.name}</h2>
               <div className="flex items-center">
