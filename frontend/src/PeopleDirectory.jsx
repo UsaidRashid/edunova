@@ -118,7 +118,7 @@ const columns = [
               } ${textColors[index % textColors.length]}`}
               style={{ backgroundColor: "white" }}
             >
-              {sortedTeams.length==4 && team === "Technology" ? '+4' : team}
+              {sortedTeams.length == 4 && team === "Technology" ? "+4" : team}
             </div>
           ))}
         </div>
@@ -537,7 +537,10 @@ export default function PeopleDirectory() {
 
               <tbody>
                 {table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="hover:bg-gray-100 border odd:bg-purple-50 even:bg-white">
+                  <tr
+                    key={row.id}
+                    className="hover:bg-gray-100 border odd:bg-purple-50 even:bg-white"
+                  >
                     {row.getVisibleCells().map((cell) => (
                       <td
                         key={cell.id}
@@ -556,13 +559,18 @@ export default function PeopleDirectory() {
                         className="p-2 rounded-lg"
                       >
                         <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
-                          height="24px"
-                          viewBox="0 -960 960 960"
-                          width="24px"
-                          fill="#6b7280"
                         >
-                          <path d="M292.31-140q-29.92 0-51.12-21.19Q220-182.39 220-212.31V-720h-40v-60h180v-35.38h240V-780h180v60h-40v507.69Q740-182 719-161q-21 21-51.31 21H292.31ZM680-720H280v507.69q0 5.39 3.46 8.85t8.85 3.46h375.38q4.62 0 8.46-3.85 3.85-3.84 3.85-8.46V-720ZM376.16-280h59.99v-360h-59.99v360Zm147.69 0h59.99v-360h-59.99v360ZM280-720v520-520Z" />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
                         </svg>
                       </button>
                     </td>

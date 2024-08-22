@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import profile from "./profile.png";
@@ -26,6 +26,8 @@ const schema = z.object({
 const EditUser = ({ user, onSave, onCancel }) => {
   const [selectedTeams, setSelectedTeams] = useState(user.teams || []);
   const [profilePic, setProfilePic] = useState(user.profilePic);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const {
     register,
@@ -47,17 +49,28 @@ const EditUser = ({ user, onSave, onCancel }) => {
     setSelectedTeams(user.teams || []);
   }, [user.teams]);
 
-  const handleTeamChange = (event) => {
-    const { value, checked } = event.target;
-    setSelectedTeams((prev) => {
-      const updatedTeams = checked
-        ? [...prev, value]
-        : prev.filter((team) => team !== value);
-      setValue("teams", updatedTeams);
-      return updatedTeams;
-    });
+  const handleSelectChange = (event) => {
+    const team = event.target.value;
+    if (team && !selectedTeams.includes(team)) {
+      setSelectedTeams([...selectedTeams, team]);
+      setSearchTerm("");
+    }
+    setDropdownOpen(false);
   };
-  
+
+  const handleRemoveTeam = (team) => {
+    setSelectedTeams(selectedTeams.filter((t) => t !== team));
+  };
+
+  const handleDropdownToggle = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
+  const filteredOptions = teamOptions.filter(
+    (team) =>
+      !selectedTeams.includes(team) &&
+      team.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -114,29 +127,17 @@ const EditUser = ({ user, onSave, onCancel }) => {
         <img
           src={profilePic || profile}
           alt="Profile Picture"
-          className="rounded-full w-24 h-24"
+          className="rounded-full w-32 h-32"
+          onError={(e)=>e.target.src=profile}
         />
       </div>
 
       <div className="flex justify-center mb-4 space-x-2">
         <label
           htmlFor="file-upload"
-          className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center cursor-pointer"
+          className="bg-purple-50 border hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center cursor-pointer"
         >
-          <svg
-            className="w-4 h-4 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l.636-.636a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-            />
-          </svg>
+          <i class="fa-solid fa-arrow-rotate-left me-2"></i>
           CHANGE PHOTO
           <input
             id="file-upload"
@@ -147,11 +148,11 @@ const EditUser = ({ user, onSave, onCancel }) => {
         </label>
         <button
           type="button"
-          className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
+          className="bg-purple-50 border hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
           onClick={() => setProfilePic(null)}
         >
           <svg
-            className="w-4 h-4 mr-2"
+            className="w-5 h-5 mr-2"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -181,7 +182,7 @@ const EditUser = ({ user, onSave, onCancel }) => {
               <input
                 type="text"
                 id="name"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-b-black"
                 {...register("name")}
               />
               {errors.name && (
@@ -199,7 +200,7 @@ const EditUser = ({ user, onSave, onCancel }) => {
               <input
                 type="email"
                 id="email"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-b-black"
                 {...register("email")}
               />
               {errors.email && (
@@ -218,7 +219,7 @@ const EditUser = ({ user, onSave, onCancel }) => {
               </label>
               <select
                 id="role"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-b-black"
                 {...register("role")}
               >
                 <option value="">Select a role</option>
@@ -242,7 +243,7 @@ const EditUser = ({ user, onSave, onCancel }) => {
               </label>
               <select
                 id="status"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-b-black"
                 {...register("status")}
               >
                 <option value="Active">Active</option>
@@ -263,26 +264,61 @@ const EditUser = ({ user, onSave, onCancel }) => {
           >
             Teams
           </label>
-          <div className="flex flex-wrap space-x-4">
-            {teamOptions.map((team) => (
-              <div key={team} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id={`team-${team}`}
-                  name="teams"
-                  value={team}
-                  className="form-checkbox h-5 w-5 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
-                  {...register("teams")}
-                  onChange={handleTeamChange}
-                />
-                <label
-                  htmlFor={`team-${team}`}
-                  className="text-gray-700 text-sm font-medium"
-                >
-                  {team}
-                </label>
+          <div className="relative">
+            <div
+              onClick={handleDropdownToggle}
+              className="block w-full px-3 py-2 border rounded-md shadow-sm cursor-pointer focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            >
+              <div className="flex flex-wrap gap-2">
+                {selectedTeams.map((team) => (
+                  <div
+                    key={team}
+                    className="flex items-center space-x-2 bg-purple-100 rounded-md px-2 py-1"
+                  >
+                    <span className="text-sm text-purple-700">{team}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveTeam(team)}
+                      className="text-gray-500 hover:text-red-700"
+                    >
+                      <i class="fa-solid fa-xmark"></i>
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
+              {!selectedTeams.length && (
+                <span className="text-gray-500">Select teams</span>
+              )}
+            </div>
+
+            {dropdownOpen && (
+              <div className="absolute z-10 mt-2 w-full bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search..."
+                  className="block w-full px-3 py-2 border-b rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+                {filteredOptions.length ? (
+                  filteredOptions.map((team) => (
+                    <div
+                      key={team}
+                      onClick={() =>
+                        handleSelectChange({ target: { value: team } })
+                      }
+                      className="cursor-pointer hover:bg-gray-100 px-4 py-2 text-sm"
+                    >
+                      {team}
+                    </div>
+                  ))
+                ) : (
+                  <div className="px-4 py-2 text-sm text-gray-500">
+                    No options available
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
