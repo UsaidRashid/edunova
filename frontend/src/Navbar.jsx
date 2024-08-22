@@ -5,7 +5,7 @@ import profile from "./janedoe.png";
 
 const Navbar = () => {
   return (
-    <nav className="bg-white shadow-md">
+    <nav className="bg-white border">
       <div className="px-4 mx-2">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
