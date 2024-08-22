@@ -1,12 +1,12 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell } from "@fortawesome/free-solid-svg-icons";
+import {faBell } from "@fortawesome/free-solid-svg-icons";
 import profile from "./janedoe.png";
 
 const Navbar = () => {
   return (
     <nav className="bg-white shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="px-4 mx-2">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <span className="text-2xl font-bold text-purple-600">
@@ -35,7 +35,7 @@ const Navbar = () => {
                   d="M9 17v1a3 3 0 006 0v-1"
                 ></path>
               </svg> */}
-              <FontAwesomeIcon icon={faBell} />
+              <i class="far fa-bell"></i>
             </button>
             <div className="flex items-center">
               <img
@@ -43,7 +43,7 @@ const Navbar = () => {
                 src={profile}
                 alt="Profile"
               />
-              <span className="ml-2 text-gray-700">
+              <span className="text-gray-700">
                 <strong>Jane Doe</strong>
               </span>
             </div>
