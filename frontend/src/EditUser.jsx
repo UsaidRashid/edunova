@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { z } from "zod";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import profile from "./profile.png";
@@ -24,8 +24,8 @@ const schema = z.object({
 });
 
 const EditUser = ({ user, onSave, onCancel }) => {
-  const [selectedTeams, setSelectedTeams] = useState(user.teams || []);
   const [profilePic, setProfilePic] = useState(user.profilePic);
+  const [selectedTeams, setSelectedTeams] = useState(user.teams || []);
   const [searchTerm, setSearchTerm] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -128,7 +128,7 @@ const EditUser = ({ user, onSave, onCancel }) => {
           src={profilePic || profile}
           alt="Profile Picture"
           className="rounded-full w-32 h-32"
-          onError={(e)=>e.target.src=profile}
+          onError={(e) => (e.target.src = profile)}
         />
       </div>
 
